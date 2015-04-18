@@ -33,7 +33,7 @@ public class TextBehaviour : MonoBehaviour
 			textMesh.text = "";
 
 		Color tempColour = textMesh.color;
-		tempColour.a = 0.1f * contents;
+		tempColour.a = 0.3f + 0.1f * contents;
 		textMesh.color = tempColour;
 
 	}
