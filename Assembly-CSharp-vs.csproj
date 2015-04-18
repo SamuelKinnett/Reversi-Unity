@@ -47,6 +47,11 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\BoardBehaviour.cs" />
+     <Compile Include="Assets\Scripts\GreedyAI.cs" />
+     <Compile Include="Assets\Scripts\MoveCamera.cs" />
+     <Compile Include="Assets\Scripts\ShadowControl.cs" />
+     <Compile Include="Assets\Scripts\ShadowManager.cs" />
+     <Compile Include="Assets\Scripts\TextBehaviour.cs" />
      <Compile Include="Assets\Scripts\TileBehaviour.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

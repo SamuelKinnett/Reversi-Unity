@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TileBehaviour : MonoBehaviour {
+public class TileBehaviour : MonoBehaviour
+{
 
 	public GameObject boardManager;			//The boardBehaviour script to allow access to the current board state
 	public SpriteRenderer spriteRenderer;	//The Sprite Renderer for this tile
@@ -19,17 +20,27 @@ public class TileBehaviour : MonoBehaviour {
 	float currentOpacity;					//The current opacity
 	float time;								//Used to store a time value for the purpose of fading
 
-	// Use this for initialization
-	void Start () {
+	#region Colours
 
-		tintColour = Color.white;
+	Color lightCyan = new Color32 (215, 255, 254, 255);
+	Color deepCyan = new Color32 (39, 253, 245, 255);
+	Color deepPink = new Color32 (247, 101, 184, 255);
+
+	#endregion
+
+	// Use this for initialization
+	void Start ()
+	{
+
+		tintColour = lightCyan;
 		opacity = 0.5f;
 		boardBehaviour = boardManager.GetComponent<BoardBehaviour> ();
 
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 
 		spriteRenderer.material.SetColor ("_Color", currentColour);
 
@@ -38,15 +49,15 @@ public class TileBehaviour : MonoBehaviour {
 		switch (owner) {
 
 		case 0:
-			tintColour = Color.white;
+			tintColour = lightCyan;
 			break;
 
 		case 1:
-			tintColour = Color.red;
+			tintColour = deepPink;
 			break;
 
 		case 2:
-			tintColour = Color.blue;
+			tintColour = deepCyan;
 			break;
 		}
 
@@ -64,7 +75,7 @@ public class TileBehaviour : MonoBehaviour {
 		if (fading) {
 
 			time += Time.deltaTime;
-			currentColour = Color.Lerp(currentColour, tintColour, time * fadeSpeed);
+			currentColour = Color.Lerp (currentColour, tintColour, time * fadeSpeed);
 			currentOpacity = Mathf.Lerp (currentOpacity, opacity, time * fadeSpeed);
 
 			currentColour.a = currentOpacity;
@@ -72,24 +83,28 @@ public class TileBehaviour : MonoBehaviour {
 	}
 
 	// When the mouse is passed over the tile
-	void OnMouseOver() {
+	void OnMouseOver ()
+	{
 
 		opacity = 1;
 
 	}
 
 	//When the mouse leaves the tile
-	void OnMouseExit() {
+	void OnMouseExit ()
+	{
 
 		opacity = 0.5f;
 
 	}
 
 	//When the tile is clicked
-	void OnMouseDown() {
+	void OnMouseDown ()
+	{
 
-		if (boardBehaviour.currentPlayer == 1) {
-			boardBehaviour.SetTileState(x, y, 1);
+		if (boardBehaviour.currentPlayer == 1 && boardBehaviour.GetTileState (x, y) == 0) {
+			boardBehaviour.SetTileState (x, y, 1);
+			boardBehaviour.TurnComplete ();
 		}
 	}
 }
