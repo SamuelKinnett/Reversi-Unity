@@ -5,6 +5,7 @@ public class TileBehaviour : MonoBehaviour
 {
 
 	public GameObject boardManager;			//The boardBehaviour script to allow access to the current board state
+	public GameObject gameController;		//The GameController object to allow access to the players states
 	public SpriteRenderer spriteRenderer;	//The Sprite Renderer for this tile
 	public int x;							//The X co-ordinate of the tile
 	public int y;							//The Y co-ordinate of the tile
@@ -13,7 +14,11 @@ public class TileBehaviour : MonoBehaviour
 	Color tintColour;						//The colour to tint the square with
 	int owner;								//1 = player 1, 2 = player 2, 0 = unowned
 	float opacity;							//The opacity of the tile
+
 	private BoardBehaviour boardBehaviour;	//The BoardBehaviour script of the BoardManager 
+	private GameManager gameManager;
+	private PlayerControl player1;
+	private PlayerControl player2;
 
 	bool fading;							//Is the tile currently fading to another colour?
 	Color currentColour;					//The current colour
@@ -32,10 +37,14 @@ public class TileBehaviour : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-
 		tintColour = lightCyan;
 		opacity = 0.5f;
+
 		boardBehaviour = boardManager.GetComponent<BoardBehaviour> ();
+		gameManager = gameController.GetComponent<GameManager> ();
+
+		player1 = gameManager.GetPlayerControl (1);
+		player2 = gameManager.GetPlayerControl (2);
 
 	}
 	
@@ -103,8 +112,11 @@ public class TileBehaviour : MonoBehaviour
 	void OnMouseDown ()
 	{
 
-		if (boardBehaviour.currentPlayer == 1 && boardBehaviour.GetTileState (x, y) == 0) {
+		if (boardBehaviour.currentPlayer == 1 && boardBehaviour.GetTileState (x, y) == 0 && player1.enabled) {
 			boardBehaviour.SetTileState (x, y, 1);
+			boardBehaviour.TurnComplete ();
+		} else if (boardBehaviour.currentPlayer == 2 && boardBehaviour.GetTileState (x, y) == 0 && player2.enabled) {
+			boardBehaviour.SetTileState (x, y, 2);
 			boardBehaviour.TurnComplete ();
 		}
 	}

@@ -10,12 +10,15 @@ public class ScoreManager : MonoBehaviour
 	public int player;
 	private BoardBehaviour boardBehaviour;
 	private System.Random rand;
+	private Vector3 defaultScale;
 
 	// Use this for initialization
 	void Start ()
 	{
 		boardBehaviour = boardManager.GetComponent<BoardBehaviour> ();
 		rand = new System.Random ();
+
+		defaultScale = this.transform.localScale;
 
 		if (player == 1)
 			this.transform.position = Camera.main.ViewportToWorldPoint (new Vector3 (0.05F, 1F, 8.9F));
@@ -26,6 +29,10 @@ public class ScoreManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		if (player == boardBehaviour.currentPlayer)
+			this.transform.localScale = new Vector3 (0.16F, 0.16F, 0);
+		else
+			this.transform.localScale = defaultScale;
 		if (player == 1)
 			textMesh.text = "P1: " + boardBehaviour.player1Score.ToString ();
 		else

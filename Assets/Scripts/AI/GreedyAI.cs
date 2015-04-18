@@ -3,42 +3,59 @@
 using UnityEngine;
 using System.Collections;
 
-public class GreedyAI : MonoBehaviour {
+public class GreedyAI : ScriptableObject, AI
+{
 
-	public GameObject boardManager;			//The BoardManager
-	private BoardBehaviour boardBehaviour;	//The BoardBehaviour script of the BoardManager
-	public int playerNumber;				//is the AI player 1 or player 2?
+	GameObject boardManager;		//The BoardManager
+	BoardBehaviour boardBehaviour;	//The BoardBehaviour script of the BoardManager
+	int playerNumber;				//Is the AI player 1 or player 2?
+	bool firstMove;					//Is this the first move of the AI?
 
-	// Use this for initialization
-	void Start () {
-		boardBehaviour = boardManager.GetComponent<BoardBehaviour>();
+	// Constructor
+	public GreedyAI (GameObject boardManager, int playerNumber)
+	{
+		this.boardManager = boardManager;
+		this.boardBehaviour = boardManager.GetComponent<BoardBehaviour> ();
+		this.playerNumber = playerNumber;
+		firstMove = true;
 	}
 	
-	// Update is called once per frame
-	void Update () {
+	// Method to place a tile on the board.
+	public void UpdateAI ()
+	{
+		if (firstMove && boardBehaviour.currentPlayer == playerNumber) {
+			//Place the first tile randomly.
 
-		int highestX = 0;		//The x co-ordinate of the current highest scoring tile
-		int highestY = 0;		//The y co-ordinate of the current highest scoring tile
+			System.Random rand = new System.Random ();
+			int xChoice = rand.Next (0, 8);
+			int yChoice = rand.Next (0, 8);
 
-		int highestScore = 0;	//The highest score found so far
-		int currentScore;		//The score of the current tile being compared
+			boardBehaviour.SetTileState (xChoice, yChoice, playerNumber);
+			boardBehaviour.TurnComplete ();
+			firstMove = false;
+		} else {
+			int highestX = 0;		//The x co-ordinate of the current highest scoring tile
+			int highestY = 0;		//The y co-ordinate of the current highest scoring tile
 
-		if (boardBehaviour.currentPlayer == playerNumber) {
-			for (int y = 0; y < 8; y ++) {
-				for (int x = 0; x < 8; x++) {
-					currentScore = boardBehaviour.GetTileScore(x, y, playerNumber);
+			int highestScore = 0;	//The highest score found so far
+			int currentScore;		//The score of the current tile being compared
 
-					if (currentScore > highestScore && boardBehaviour.GetTileState(x, y) == 0) {
-						highestScore = currentScore;
-						highestX = x;
-						highestY = y;
+			if (boardBehaviour.currentPlayer == playerNumber) {
+				for (int y = 0; y < 8; y ++) {
+					for (int x = 0; x < 8; x++) {
+						currentScore = boardBehaviour.GetTileScore (x, y, playerNumber);
+
+						if (currentScore > highestScore && boardBehaviour.GetTileState (x, y) == 0) {
+							highestScore = currentScore;
+							highestX = x;
+							highestY = y;
+						}
 					}
 				}
+
+				boardBehaviour.SetTileState (highestX, highestY, playerNumber);
+				boardBehaviour.TurnComplete ();
 			}
-
-			boardBehaviour.SetTileState(highestX, highestY, playerNumber);
-			boardBehaviour.TurnComplete();
 		}
-
 	}
 }

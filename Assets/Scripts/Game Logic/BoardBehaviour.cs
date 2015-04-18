@@ -4,7 +4,7 @@ using System.Collections;
 public class BoardBehaviour : MonoBehaviour
 {
 
-	public int currentPlayer;	//1 = player 1, 2 = player 2, 0 = neither (this can be used to add waiting times and to pause / stop the game)
+	public int currentPlayer;	//1 = player 1, 2 = player 2, 0 = neither (this can be used to add waiting times and to pause / stop the game), 3 = switching
 	int[,] board;				//The gameboard. A 0 indicates an uncaptured tile, whilst a 1 or a 2 indicates ownership by player 1 or 2 respectively.
 
 	int nextPlayer;				//The player to swith to after waiting
@@ -474,7 +474,7 @@ public class BoardBehaviour : MonoBehaviour
 		else
 			nextPlayer = 1;
 				
-		currentPlayer = 0;
+		currentPlayer = 3;
 		switching = true;
 		time = 0;
 	}
