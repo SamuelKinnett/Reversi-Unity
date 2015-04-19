@@ -10,7 +10,6 @@ public class BoardBehaviour : MonoBehaviour
 	int nextPlayer;				//The player to swith to after waiting
 	public int player1Score;	//Player 1's score
 	public int player2Score;	//Player 2's score
-	public bool scoresVisible;  //Are the scores visible at the moment?
 	float time;					//Used to wait after a turn has been played
 	bool switching;				//True when the turn is currently switching
 
@@ -27,7 +26,6 @@ public class BoardBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-
 		bool boardFull = true;
 		time += Time.deltaTime;
 		
@@ -64,7 +62,7 @@ public class BoardBehaviour : MonoBehaviour
 
 			if (player1NewScore > player2NewScore)
 				winner = 1;
-			else if (player2NewScore < player1NewScore)
+			else if (player2NewScore > player1NewScore)
 				winner = 2;
 			else
 				winner = 3;
@@ -479,5 +477,18 @@ public class BoardBehaviour : MonoBehaviour
 		currentPlayer = 3;
 		switching = true;
 		time = 0;
+	}
+
+	public void ResetBoard ()
+	{
+		for (int x = 0; x < 8; x++) {
+			for (int y = 0; y < 8; y++) {
+				board [x, y] = 0;
+			}
+		}
+		player1Score = 0;
+		player2Score = 0;
+		winner = 0;
+		currentPlayer = 1;
 	}
 }

@@ -6,6 +6,7 @@ public class EndgameInfoController : MonoBehaviour
 
 	public GameObject boardManager;
 	public TextMesh textMesh;
+	public bool enabled;
 	private BoardBehaviour boardBehaviour;
 
 	bool winnerFound = false;
@@ -24,6 +25,8 @@ public class EndgameInfoController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		Color tempColour = textMesh.color;
+
 		if (!winnerFound) {
 			if (boardBehaviour.currentPlayer == 0) {
 
@@ -32,25 +35,34 @@ public class EndgameInfoController : MonoBehaviour
 				case 1:
 					textMesh.text = "Player 1 Wins!";
 					winnerFound = true;
+					enabled = true;
 					break;
 
 				case 2:
 					textMesh.text = "Player 2 Wins!";
 					winnerFound = true;
+					enabled = true;
 					break;
 
 				case 3:
 					textMesh.text = "It's a Draw!";
 					winnerFound = true;
+					enabled = true;
 					break;
 
 				}
 
 			}
-		} else {
-			Color tempColour = textMesh.color;
+		} 
+
+		if (enabled) {
 			tempColour.a += Time.deltaTime;
 			textMesh.color = tempColour;
+		} else {
+			tempColour.a = 0;
+			textMesh.color = tempColour;
+			winnerFound = false;
 		}
+
 	}
 }

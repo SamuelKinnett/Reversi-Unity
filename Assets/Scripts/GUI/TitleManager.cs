@@ -13,13 +13,14 @@ public class TitleManager : MonoBehaviour
 	void Start ()
 	{
 		enabled = true;
-		this.transform.position = Camera.main.ViewportToWorldPoint (new Vector3 (0.5F, 0.7F, 8.9F));
 		rand = new System.Random ();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+		this.transform.position = Camera.main.ViewportToWorldPoint (new Vector3 (0.5F, 0.7F, 8.9F));
+
 		Color tempColour = textMesh.color;
 
 		if (enabled) {

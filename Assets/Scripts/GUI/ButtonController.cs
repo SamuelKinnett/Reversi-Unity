@@ -55,10 +55,10 @@ public class ButtonController : MonoBehaviour
 			else
 				this.transform.localScale = defaultScale;
 		} else if (selected) {
-			if (this.transform.localScale.x < 0.75F)
+			if (this.transform.localScale.x < 0.70F)
 				this.transform.localScale += new Vector3 (Time.deltaTime * 2, Time.deltaTime * 2, 0);
 			else
-				this.transform.localScale = new Vector3 (0.75F, 0.75F, 0);
+				this.transform.localScale = new Vector3 (0.70F, 0.70F, 0);
 		}
 		textMesh.color = tempColour;
 	}

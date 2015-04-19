@@ -32,8 +32,13 @@ public class MenuManager : MonoBehaviour
 	public GameObject avaButton;
 
 	public GameObject gameController;
+	public GameObject boardManager;
+	public GameObject endgameInfo;
 	public Camera camera;
 	public bool inMenu;
+
+	private BoardBehaviour boardBehaviour;
+	private EndgameInfoController endGameInfoController;
 
 	private ButtonController start;
 	private ButtonController exit;
@@ -50,13 +55,13 @@ public class MenuManager : MonoBehaviour
 	private GameManager gameManager;
 	private MoveCamera cameraController;
 
-	private float cooldownTimer;				//Used to wait for the key to be released.
-
 	// Use this for initialization
 	void Start ()
 	{
 		titleManager = title.GetComponent<TitleManager> ();
 		gameManager = gameController.GetComponent<GameManager> ();
+		boardBehaviour = boardManager.GetComponent<BoardBehaviour> ();
+		endGameInfoController = endgameInfo.GetComponent<EndgameInfoController> ();
 		cameraController = camera.GetComponent<MoveCamera> ();
 
 		menuState = MenuState.main;
@@ -83,9 +88,18 @@ public class MenuManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (inMenu) {
+		if (inMenu && Input.GetKeyDown (KeyCode.Escape) && menuState == MenuState.selectGameType) {
+			menuState = MenuState.main;
+			updateNeeded = true;
+			
+			pvp.selected = false;
+			pva.selected = false;
+			ava.selected = false;
+			
+		} else if (inMenu && Input.GetKeyDown (KeyCode.Escape))
+			Application.Quit ();
 
-			cooldownTimer += Time.deltaTime;
+		if (inMenu) {
 
 			switch (menuState) {
 
@@ -95,6 +109,10 @@ public class MenuManager : MonoBehaviour
 					titleManager.enabled = true;
 					start.CreateButton (0.5F, 0.5F, "Start Game");
 					exit.CreateButton (0.5F, 0.4F, "Exit Game");
+
+					start.selected = true;
+					exit.selected = false;
+
 					pvp.enabled = false;
 					pva.enabled = false;
 					ava.enabled = false;
@@ -109,13 +127,26 @@ public class MenuManager : MonoBehaviour
 					titleManager.enabled = false;
 					start.enabled = false;
 					exit.enabled = false;
-					pvp.CreateButton (0.5F, 0.55F, "Start Game");
-					pva.CreateButton (0.5F, 0.45F, "Start Game");
-					ava.CreateButton (0.5F, 0.35F, "Start Game");
+					pvp.CreateButton (0.5F, 0.6F, "Start Game");
+					pva.CreateButton (0.5F, 0.5F, "Start Game");
+					ava.CreateButton (0.5F, 0.4F, "Start Game");
+
+					pvp.selected = true;
+					pva.selected = false;
+					ava.selected = false;
+
 					updateNeeded = false;
 				}
 
 				break;
+			}
+		} else {
+			if (Input.GetKeyDown (KeyCode.Escape) && boardBehaviour.winner != 0) {
+				inMenu = true;
+				endGameInfoController.enabled = false;
+				GoToMenu ();
+			} else {
+				//TODO: Add code for a pause menu
 			}
 		}
 
@@ -131,112 +162,103 @@ public class MenuManager : MonoBehaviour
 		}
 		*/
 
-		if (cooldownTimer > 0.1) {
-			if (inMenu && Input.GetKey (KeyCode.Escape) && menuState == MenuState.selectGameType) {
-				menuState = MenuState.main;
+		if (inMenu && (Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.S))) {
+			switch (menuState) {
+
+			case MenuState.main:
+
+				start.selected = false;
+				exit.selected = true;
+
+				break;
+
+			case MenuState.selectGameType:
+
+				switch (menuOptions2) {
+
+				case MenuOptions2.pvp:
+
+					menuOptions2 = MenuOptions2.pva;
+					pvp.selected = false;
+					pva.selected = true;
+					ava.selected = false;
+
+					break;
+
+				case MenuOptions2.pva:
+
+					menuOptions2 = MenuOptions2.ava;
+					pvp.selected = false;
+					pva.selected = false;
+					ava.selected = true;
+					
+					break;
+
+				}
+
+				break;
+
+			}
+		}
+
+		if (inMenu && (Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W))) {
+			switch (menuState) {
+				
+			case MenuState.main:
+				
+				start.selected = true;
+				exit.selected = false;
+				
+				break;
+				
+			case MenuState.selectGameType:
+				
+				switch (menuOptions2) {
+					
+				case MenuOptions2.pva:
+
+					menuOptions2 = MenuOptions2.pvp;
+					pvp.selected = true;
+					pva.selected = false;
+					ava.selected = false;
+					
+					break;
+					
+				case MenuOptions2.ava:
+
+					menuOptions2 = MenuOptions2.pva;
+					pvp.selected = false;
+					pva.selected = true;
+					ava.selected = false;
+					
+					break;
+					
+				}
+				
+				break;
+				
+			}
+		}
+
+		if (inMenu && (Input.GetKeyDown (KeyCode.Return) || Input.GetKeyDown (KeyCode.Space))) {
+			if (start.selected) {
+				start.selected = false;
+				menuState = MenuState.selectGameType;
 				updateNeeded = true;
-			} else if (inMenu)
+			}
+			if (exit.selected) {
 				Application.Quit ();
-
-			if (inMenu && (Input.GetKey (KeyCode.DownArrow) || Input.GetKey (KeyCode.S))) {
-				switch (menuState) {
-
-				case MenuState.main:
-
-					start.selected = false;
-					exit.selected = true;
-
-					break;
-
-				case MenuState.selectGameType:
-
-					switch (menuOptions2) {
-
-					case MenuOptions2.pvp:
-
-						menuOptions2 = MenuOptions2.pva;
-						pvp.selected = false;
-						pva.selected = true;
-						ava.selected = false;
-
-						break;
-
-					case MenuOptions2.pva:
-
-						menuOptions2 = MenuOptions2.ava;
-						pvp.selected = false;
-						pva.selected = false;
-						ava.selected = true;
-					
-						break;
-
-					}
-
-					break;
-
-				}
+			}
+			if (pvp.selected) {
+				StartGame (0);
+			}
+			if (pva.selected) {
+				StartGame (1);
+			}
+			if (ava.selected) {
+				StartGame (2);
 			}
 
-			if (inMenu && (Input.GetKey (KeyCode.UpArrow) || Input.GetKey (KeyCode.W))) {
-				switch (menuState) {
-				
-				case MenuState.main:
-				
-					start.selected = true;
-					exit.selected = false;
-				
-					break;
-				
-				case MenuState.selectGameType:
-				
-					switch (menuOptions2) {
-					
-					case MenuOptions2.pva:
-
-						menuOptions2 = MenuOptions2.pvp;
-						pvp.selected = true;
-						pva.selected = false;
-						ava.selected = false;
-					
-						break;
-					
-					case MenuOptions2.ava:
-
-						menuOptions2 = MenuOptions2.pva;
-						pvp.selected = false;
-						pva.selected = true;
-						ava.selected = false;
-					
-						break;
-					
-					}
-				
-					break;
-				
-				}
-			}
-
-			if (inMenu && (Input.GetKey (KeyCode.Return) || Input.GetKey (KeyCode.Space))) {
-
-				if (start.selected) {
-					start.selected = false;
-					menuState = MenuState.selectGameType;
-					updateNeeded = true;
-				}
-				if (exit.selected) {
-					Application.Quit ();
-				}
-				if (pvp.selected) {
-					StartGame (0);
-				}
-				if (pva.selected) {
-					StartGame (1);
-				}
-				if (ava.selected) {
-					StartGame (2);
-				}
-
-			}
 		}
 	}
 	
@@ -251,6 +273,14 @@ public class MenuManager : MonoBehaviour
 		camera.transform.rotation = Quaternion.Euler (0, 0, 0);
 		cameraController.rotationMultiplier = 0;
 		gameManager.EndGame ();
+		boardBehaviour.ResetBoard ();
+		updateNeeded = true;
+
+		start.selected = true;
+		exit.selected = false;
+		pvp.selected = false;
+		pva.selected = false;
+		ava.selected = false;
 	}
 
 	public void StartGame (int gameType)
