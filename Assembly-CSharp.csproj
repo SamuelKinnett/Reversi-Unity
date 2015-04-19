@@ -50,9 +50,12 @@
      <Compile Include="Assets\Scripts\AI\AIManager.cs" />
      <Compile Include="Assets\Scripts\AI\GreedyAI.cs" />
      <Compile Include="Assets\Scripts\Camera\MoveCamera.cs" />
+     <Compile Include="Assets\Scripts\GUI\ButtonController.cs" />
      <Compile Include="Assets\Scripts\GUI\EndgameInfoController.cs" />
+     <Compile Include="Assets\Scripts\GUI\MenuManager.cs" />
      <Compile Include="Assets\Scripts\GUI\ScoreManager.cs" />
      <Compile Include="Assets\Scripts\GUI\TextBehaviour.cs" />
+     <Compile Include="Assets\Scripts\GUI\TitleManager.cs" />
      <Compile Include="Assets\Scripts\Game Logic\BoardBehaviour.cs" />
      <Compile Include="Assets\Scripts\Game Logic\GameManager.cs" />
      <Compile Include="Assets\Scripts\Game Logic\PlayerControl.cs" />

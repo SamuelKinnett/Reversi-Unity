@@ -8,6 +8,8 @@ public class ScoreManager : MonoBehaviour
 	public GameObject boardManager;
 	public TextMesh textMesh;
 	public int player;
+	public bool enabled;
+
 	private BoardBehaviour boardBehaviour;
 	private System.Random rand;
 	private Vector3 defaultScale;
@@ -29,19 +31,25 @@ public class ScoreManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (player == boardBehaviour.currentPlayer)
-			this.transform.localScale = new Vector3 (0.16F, 0.16F, 0);
-		else
-			this.transform.localScale = defaultScale;
-		if (player == 1)
-			textMesh.text = "P1: " + boardBehaviour.player1Score.ToString ();
-		else
-			textMesh.text = "P2: " + boardBehaviour.player2Score.ToString ();
-
-
-		//Flickering code
 		Color tempColour = textMesh.color;
-		tempColour.a = (float)(0.7 + rand.NextDouble ());
+
+		if (enabled) {
+			if (player == boardBehaviour.currentPlayer)
+				this.transform.localScale = new Vector3 (0.16F, 0.16F, 0);
+			else
+				this.transform.localScale = defaultScale;
+			if (player == 1)
+				textMesh.text = "P1: " + boardBehaviour.player1Score.ToString ();
+			else
+				textMesh.text = "P2: " + boardBehaviour.player2Score.ToString ();
+
+
+			//Flickering code
+			tempColour.a = (float)(0.7 + rand.NextDouble ());
+		} else {
+			tempColour.a = 0;
+		}
+
 		textMesh.color = tempColour;
 	}
 }
