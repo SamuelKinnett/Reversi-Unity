@@ -30,12 +30,14 @@ public class GreedyAI : ScriptableObject, AI
 		if (boardBehaviour.currentPlayer == playerNumber) {
 			for (int y = 0; y < 8; y ++) {
 				for (int x = 0; x < 8; x++) {
-					currentScore = boardBehaviour.GetTileScore (x, y, playerNumber);
+					if (boardBehaviour.CanPlaceTile (x, y, playerNumber)) {
+						currentScore = boardBehaviour.GetTileScore (x, y, playerNumber);
 
-					if (currentScore > highestScore && boardBehaviour.GetTileState (x, y) == 0) {
-						highestScore = currentScore;
-						highestX = x;
-						highestY = y;
+						if (currentScore > highestScore && boardBehaviour.GetTileState (x, y) == 0) {
+							highestScore = currentScore;
+							highestX = x;
+							highestY = y;
+						}
 					}
 				}
 			}

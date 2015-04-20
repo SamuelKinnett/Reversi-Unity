@@ -96,22 +96,33 @@ public class BoardBehaviour : MonoBehaviour
 	//Set the state of the tile at the passed co-ordinates and update all other tiles accordingly
 	public void SetTileState (int x, int y, int owner)
 	{
-
+		int enemy;
 		board [x, y] = owner;
+
+		if (owner == 1)
+			enemy = 2;
+		else
+			enemy = 1;
 
 		#region Test Right
 		int length = 0;
 		bool endFound = false;
-
+		bool endSearch = false;
+		bool enemyPassed = false;
+		
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
-
-			if (board [currentX, y] == owner || endFound == true) {
+			
+			if ((board [currentX, y] == owner || endFound == true) && !endSearch) {
 				endFound = true;
-			} else {
+				endSearch = true;
+			} else if (board [currentX, y] == enemy && !endSearch) {
+				enemyPassed = true;
 				length++;
+			} else {
+				endSearch = true;
 			}
 		}
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			length++;
 			for (int currentX = x + 1; currentX < x + length; currentX ++) {
 				board [currentX, y] = owner;
@@ -122,16 +133,22 @@ public class BoardBehaviour : MonoBehaviour
 		#region Test Left
 		length = 0;
 		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
 
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			
-			if (board [currentX, y] == owner || endFound == true) {
+			if ((board [currentX, y] == owner || endFound == true) && !endSearch) {
 				endFound = true;
-			} else {
+				endSearch = true;
+			} else if (board [currentX, y] == enemy && !endSearch) {
+				enemyPassed = true;
 				length++;
+			} else {
+				endSearch = true;
 			}
 		}
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			length++;
 			for (int currentX = x - 1; currentX > x - length; currentX --) {
 				board [currentX, y] = owner;
@@ -142,17 +159,24 @@ public class BoardBehaviour : MonoBehaviour
 		#region Test Upwards
 		length = 0;
 		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+
 
 
 		for (int currentY = y - 1; currentY >= 0; currentY --) {
 			
-			if (board [x, currentY] == owner || endFound == true) {
+			if ((board [x, currentY] == owner || endFound == true) && !endSearch) {
 				endFound = true;
-			} else {
+				endSearch = true;
+			} else if (board [x, currentY] == enemy && !endSearch) {
+				enemyPassed = true;
 				length++;
+			} else {
+				endSearch = true;
 			}
 		}
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			length++;
 			for (int currentY = y - 1; currentY >= y - length; currentY --) {
 				board [x, currentY] = owner;
@@ -163,17 +187,22 @@ public class BoardBehaviour : MonoBehaviour
 		#region Test Downwards
 		length = 0;
 		endFound = false;
-		
+		endSearch = false;
+		enemyPassed = false;
 		
 		for (int currentY = y + 1; currentY < 8; currentY ++) {
 			
-			if (board [x, currentY] == owner || endFound == true) {
+			if ((board [x, currentY] == owner || endFound == true) && !endSearch) {
 				endFound = true;
-			} else {
+				endSearch = true;
+			} else if (board [x, currentY] == enemy && !endSearch) {
+				enemyPassed = true;
 				length++;
+			} else {
+				endSearch = true;
 			}
 		}
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			length++;
 			for (int currentY = y + 1; currentY < y + length; currentY ++) {
 				board [x, currentY] = owner;
@@ -184,28 +213,35 @@ public class BoardBehaviour : MonoBehaviour
 		#region Test Up-Right
 		length = 0;
 		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
 
-		int diagY = y;
+		int diagY = y - 1;
 
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
 			if (diagY > 0) {
-				diagY--;
 
-				if (board [currentX, diagY] == owner || endFound == true)
+				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
-				else
+					endSearch = true;
+				} else if (board [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
 					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY--;
 			}
 		}
 
-		diagY = y;
+		diagY = y - 1;
 
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			length++;
 			for (int currentX = x + 1; currentX < x + length; currentX ++) {
 				if (diagY > 0) {
-					diagY--;
 					board [currentX, diagY] = owner;
+					diagY--;
 				}
 			}
 		}
@@ -214,28 +250,35 @@ public class BoardBehaviour : MonoBehaviour
 		#region Up-Left
 		length = 0;
 		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
 		
-		diagY = y;
+		diagY = y - 1;
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			if (diagY > 0) {
-				diagY--;
-				
-				if (board [currentX, diagY] == owner || endFound == true)
+
+				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
-				else
+					endSearch = true;
+				} else if (board [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
 					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY--;
 			}
 		}
 		
-		diagY = y;
+		diagY = y - 1;
 		
 		if (endFound) {
 			length++;
 			for (int currentX = x - 1; currentX > x - length; currentX --) {
 				if (diagY > 0) {
-					diagY--;
 					board [currentX, diagY] = owner;
+					diagY--;
 				}
 			}
 		}
@@ -244,28 +287,35 @@ public class BoardBehaviour : MonoBehaviour
 		#region Down-Right
 		length = 0;
 		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
 		
-		diagY = y;
+		diagY = y + 1;
 		
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
 			if (diagY < 7) {
-				diagY++;
-				
-				if (board [currentX, diagY] == owner || endFound == true)
+
+				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
-				else
+					endSearch = true;
+				} else if (board [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
 					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY++;
 			}
 		}
 		
-		diagY = y;
+		diagY = y + 1;
 		
 		if (endFound) {
 			length++;
 			for (int currentX = x + 1; currentX < x + length; currentX ++) {
 				if (diagY < 7) {
-					diagY++;
 					board [currentX, diagY] = owner;
+					diagY++;
 				}
 			}
 		}
@@ -274,28 +324,35 @@ public class BoardBehaviour : MonoBehaviour
 		#region Down-Left
 		length = 0;
 		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
 		
-		diagY = y;
+		diagY = y + 1;
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			if (diagY < 7) {
-				diagY++;
 				
-				if (board [currentX, diagY] == owner || endFound == true)
+				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
-				else
+					endSearch = true;
+				} else if (board [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
 					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY++;
 			}
 		}
 		
-		diagY = y;
+		diagY = y + 1;
 		
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			length++;
 			for (int currentX = x - 1; currentX >= x - length; currentX --) {
 				if (diagY < 7) {
-					diagY++;
 					board [currentX, diagY] = owner;
+					diagY++;
 				}
 			}
 		}
@@ -323,7 +380,7 @@ public class BoardBehaviour : MonoBehaviour
 		
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
 			
-			if (board [currentX, y] == owner || endFound == true) {
+			if ((board [currentX, y] == owner || endFound == true) && !endSearch) {
 				endFound = true;
 				endSearch = true;
 			} else if (board [currentX, y] == enemy && !endSearch) {
@@ -346,7 +403,7 @@ public class BoardBehaviour : MonoBehaviour
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			
-			if (board [currentX, y] == owner || endFound == true) {
+			if ((board [currentX, y] == owner || endFound == true) && !endSearch) {
 				endFound = true;
 				endSearch = true;
 			} else if (board [currentX, y] == enemy && !endSearch) {
@@ -369,7 +426,7 @@ public class BoardBehaviour : MonoBehaviour
 		
 		for (int currentY = y - 1; currentY >= 0; currentY --) {
 			
-			if (board [x, currentY] == owner || endFound == true) {
+			if ((board [x, currentY] == owner || endFound == true) && !endSearch) {
 				endFound = true;
 				endSearch = true;
 			} else if (board [x, currentY] == enemy && !endSearch) {
@@ -392,7 +449,7 @@ public class BoardBehaviour : MonoBehaviour
 		
 		for (int currentY = y + 1; currentY < 8; currentY ++) {
 			
-			if (board [x, currentY] == owner || endFound == true) {
+			if ((board [x, currentY] == owner || endFound == true) && !endSearch) {
 				endFound = true;
 				endSearch = true;
 			} else if (board [x, currentY] == enemy && !endSearch) {
@@ -418,7 +475,7 @@ public class BoardBehaviour : MonoBehaviour
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
 			if (diagY > 0) {
 				
-				if (board [currentX, diagY] == owner || endFound == true) {
+				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
 					endSearch = true;
 				} else if (board [currentX, diagY] == enemy && !endSearch) {
@@ -448,7 +505,7 @@ public class BoardBehaviour : MonoBehaviour
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			if (diagY > 0) {
 				
-				if (board [currentX, diagY] == owner || endFound == true) {
+				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
 					endSearch = true;
 				} else if (board [currentX, diagY] == enemy && !endSearch) {
@@ -479,7 +536,7 @@ public class BoardBehaviour : MonoBehaviour
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
 			if (diagY < 7) {
 				
-				if (board [currentX, diagY] == owner || endFound == true) {
+				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
 					endSearch = true;
 				} else if (board [currentX, diagY] == enemy && !endSearch) {
@@ -509,7 +566,7 @@ public class BoardBehaviour : MonoBehaviour
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			if (diagY < 7) {
 				
-				if (board [currentX, diagY] == owner || endFound == true) {
+				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
 					endSearch = true;
 				} else if (board [currentX, diagY] == enemy && !endSearch) {
