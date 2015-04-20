@@ -43,7 +43,7 @@ public class TextBehaviour : MonoBehaviour
 
 		if (boardBehaviour.GetTileState (x, y) == 0) {
 			contents = boardBehaviour.GetTileScore (x, y, currentPlayerToDisplay);
-			if (contents < 10)
+			if (contents < 10 && contents > 0)
 				textMesh.text = contents.ToString ();
 			else if (contents > 9)
 				textMesh.text = "+";

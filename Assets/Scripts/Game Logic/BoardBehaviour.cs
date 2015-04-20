@@ -20,6 +20,10 @@ public class BoardBehaviour : MonoBehaviour
 	{
 
 		board = new int[8, 8];
+		board [3, 3] = 1;
+		board [3, 4] = 2;
+		board [4, 3] = 2;
+		board [4, 4] = 1;
 
 	}
 	
@@ -79,6 +83,14 @@ public class BoardBehaviour : MonoBehaviour
 
 		return board [x, y];
 
+	}
+
+	public bool CanPlaceTile (int x, int y, int owner)
+	{
+		if (GetTileScore (x, y, owner) > 0)
+			return true;
+		else
+			return false;
 	}
 
 	//Set the state of the tile at the passed co-ordinates and update all other tiles accordingly
@@ -295,21 +307,33 @@ public class BoardBehaviour : MonoBehaviour
 	public int GetTileScore (int x, int y, int owner)
 	{
 
-		int score = 1;	//The ammount of tiles that will be converted should this tile be captured. Default 1 since 1 will always be captured.
+		int score = 0;	//The ammount of tiles that will be converted should this tile be captured.
+		int enemy;
+
+		if (owner == 1)
+			enemy = 2;
+		else
+			enemy = 1;
 
 		#region Test Right
 		int length = 0;
 		bool endFound = false;
+		bool endSearch = false;
+		bool enemyPassed = false;
 		
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
 			
 			if (board [currentX, y] == owner || endFound == true) {
 				endFound = true;
-			} else {
+				endSearch = true;
+			} else if (board [currentX, y] == enemy && !endSearch) {
+				enemyPassed = true;
 				length++;
+			} else {
+				endSearch = true;
 			}
 		}
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			score += length;
 		}
 		#endregion
@@ -317,16 +341,22 @@ public class BoardBehaviour : MonoBehaviour
 		#region Test Left
 		length = 0;
 		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			
 			if (board [currentX, y] == owner || endFound == true) {
 				endFound = true;
-			} else {
+				endSearch = true;
+			} else if (board [currentX, y] == enemy && !endSearch) {
+				enemyPassed = true;
 				length++;
+			} else {
+				endSearch = true;
 			}
 		}
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			score += length;
 		}
 		#endregion
@@ -334,17 +364,22 @@ public class BoardBehaviour : MonoBehaviour
 		#region Test Upwards
 		length = 0;
 		endFound = false;
-		
+		endSearch = false;
+		enemyPassed = false;
 		
 		for (int currentY = y - 1; currentY >= 0; currentY --) {
 			
 			if (board [x, currentY] == owner || endFound == true) {
 				endFound = true;
-			} else {
+				endSearch = true;
+			} else if (board [x, currentY] == enemy && !endSearch) {
+				enemyPassed = true;
 				length++;
+			} else {
+				endSearch = true;
 			}
 		}
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			score += length;
 		}
 		#endregion
@@ -352,17 +387,22 @@ public class BoardBehaviour : MonoBehaviour
 		#region Test Downwards
 		length = 0;
 		endFound = false;
-		
+		endSearch = false;
+		enemyPassed = false;
 		
 		for (int currentY = y + 1; currentY < 8; currentY ++) {
 			
 			if (board [x, currentY] == owner || endFound == true) {
 				endFound = true;
-			} else {
+				endSearch = true;
+			} else if (board [x, currentY] == enemy && !endSearch) {
+				enemyPassed = true;
 				length++;
+			} else {
+				endSearch = true;
 			}
 		}
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			score += length;
 		}
 		#endregion
@@ -370,95 +410,121 @@ public class BoardBehaviour : MonoBehaviour
 		#region Test Up-Right
 		length = 0;
 		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
 		
-		int diagY = y;
+		int diagY = y - 1;
 		
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
 			if (diagY > 0) {
-				diagY--;
 				
-				if (board [currentX, diagY] == owner || endFound == true)
+				if (board [currentX, diagY] == owner || endFound == true) {
 					endFound = true;
-				else
+					endSearch = true;
+				} else if (board [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
 					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY--;
 			}
 		}
 		
 		diagY = y;
 		
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			score += length;
 		}
 		#endregion
 		
 		#region Up-Left
 		length = 0;
+		endSearch = false;
 		endFound = false;
 		
-		diagY = y;
+		diagY = y - 1;
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			if (diagY > 0) {
-				diagY--;
 				
-				if (board [currentX, diagY] == owner || endFound == true)
+				if (board [currentX, diagY] == owner || endFound == true) {
 					endFound = true;
-				else
+					endSearch = true;
+				} else if (board [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
 					length++;
+				} else {
+					endSearch = true;
+				}
+
+				diagY--;
 			}
 		}
 		
 		diagY = y;
 		
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			score += length;
 		}
 		#endregion
 		
 		#region Down-Right
 		length = 0;
+		endSearch = false;
 		endFound = false;
 		
-		diagY = y;
+		diagY = y + 1;
 		
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
 			if (diagY < 7) {
-				diagY++;
 				
-				if (board [currentX, diagY] == owner || endFound == true)
+				if (board [currentX, diagY] == owner || endFound == true) {
 					endFound = true;
-				else
+					endSearch = true;
+				} else if (board [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
 					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY++;
 			}
 		}
 		
 		diagY = y;
 		
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			score += length;
 		}
 		#endregion
 		
 		#region Down-Left
 		length = 0;
+		endSearch = false;
 		endFound = false;
 		
-		diagY = y;
+		diagY = y + 1;
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
 			if (diagY < 7) {
-				diagY++;
 				
-				if (board [currentX, diagY] == owner || endFound == true)
+				if (board [currentX, diagY] == owner || endFound == true) {
 					endFound = true;
-				else
+					endSearch = true;
+				} else if (board [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
 					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY++;
 			}
 		}
 		
 		diagY = y;
 		
-		if (endFound) {
+		if (endFound && enemyPassed) {
 			score += length;
 		}
 		#endregion
@@ -486,6 +552,11 @@ public class BoardBehaviour : MonoBehaviour
 				board [x, y] = 0;
 			}
 		}
+		board [3, 3] = 1;
+		board [3, 4] = 2;
+		board [4, 3] = 2;
+		board [4, 4] = 1;
+
 		player1Score = 0;
 		player2Score = 0;
 		winner = 0;

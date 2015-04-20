@@ -30,7 +30,6 @@ public class TileBehaviour : MonoBehaviour
 	Color lightCyan = new Color32 (215, 255, 254, 255);
 	Color deepCyan = new Color32 (39, 253, 245, 255);
 	Color deepPink = new Color32 (247, 101, 184, 255);
-	Color lightTan = new Color32 (255, 207, 196, 255);
 
 	#endregion
 
@@ -112,10 +111,10 @@ public class TileBehaviour : MonoBehaviour
 	void OnMouseDown ()
 	{
 
-		if (boardBehaviour.currentPlayer == 1 && boardBehaviour.GetTileState (x, y) == 0 && player1.enabled) {
+		if (boardBehaviour.currentPlayer == 1 && boardBehaviour.GetTileState (x, y) == 0 && player1.enabled && boardBehaviour.CanPlaceTile (x, y, 1)) {
 			boardBehaviour.SetTileState (x, y, 1);
 			boardBehaviour.TurnComplete ();
-		} else if (boardBehaviour.currentPlayer == 2 && boardBehaviour.GetTileState (x, y) == 0 && player2.enabled) {
+		} else if (boardBehaviour.currentPlayer == 2 && boardBehaviour.GetTileState (x, y) == 0 && player2.enabled && boardBehaviour.CanPlaceTile (x, y, 2)) {
 			boardBehaviour.SetTileState (x, y, 2);
 			boardBehaviour.TurnComplete ();
 		}
