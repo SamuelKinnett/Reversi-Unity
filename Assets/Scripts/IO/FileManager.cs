@@ -166,6 +166,11 @@ public class FileManager : MonoBehaviour
 
 	}
 
+	public int GetNumberOfPages ()
+	{
+		return (Mathf.CeilToInt (nextFreeIndex / 5F) - 1);
+	}
+
 	/// <summary>
 	/// Populates the MapState array with the board's state at each turn
 	/// </summary>
@@ -176,7 +181,7 @@ public class FileManager : MonoBehaviour
 
 		boardBehaviour.ResetBoard ();
 
-		for (int turn = 0; turn < numberOfTurns; numberOfTurns++) {
+		for (int turn = 0; turn < numberOfTurns; turn++) {
 
 			temp = streamReader.ReadLine ();
 
@@ -221,6 +226,8 @@ public class FileManager : MonoBehaviour
 				logNames [i] = null;
 			}
 		}
+
+		streamReader.Close ();
 
 		return logNames;
 	}

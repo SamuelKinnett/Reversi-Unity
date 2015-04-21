@@ -47,6 +47,7 @@ public class MenuManager : MonoBehaviour
 	public GameObject loadButton3;
 	public GameObject loadButton4;
 	public GameObject loadButton5;
+	public GameObject pageIndicator;
 
 	public GameObject gameController;
 	public GameObject boardManager;
@@ -70,6 +71,7 @@ public class MenuManager : MonoBehaviour
 	private ButtonController load3;
 	private ButtonController load4;
 	private ButtonController load5;
+	private ButtonController pageViewer;
 	int currentLoadPage;
 	int highestLoadPage;
 
@@ -106,6 +108,7 @@ public class MenuManager : MonoBehaviour
 		pvp = pvpButton.GetComponent<ButtonController> ();
 		pva = pvaButton.GetComponent<ButtonController> ();
 		ava = avaButton.GetComponent<ButtonController> ();
+		pageViewer = pageIndicator.GetComponent<ButtonController> ();
 
 		load1 = loadButton1.GetComponent<ButtonController> ();
 		load2 = loadButton2.GetComponent<ButtonController> ();
@@ -126,13 +129,18 @@ public class MenuManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		if (inMenu && Input.GetKeyDown (KeyCode.Escape) && menuState == MenuState.selectGameType) {
+		if (inMenu && Input.GetKeyDown (KeyCode.Escape) && (menuState == MenuState.selectGameType || menuState == MenuState.loadGame)) {
 			menuState = MenuState.main;
 			updateNeeded = true;
 			
 			pvp.selected = false;
 			pva.selected = false;
 			ava.selected = false;
+			load1.selected = false;
+			load2.selected = false;
+			load3.selected = false;
+			load4.selected = false;
+			load5.selected = false;
 			
 		} else if (inMenu && Input.GetKeyDown (KeyCode.Escape))
 			Application.Quit ();
@@ -149,7 +157,10 @@ public class MenuManager : MonoBehaviour
 					load.CreateButton (0.5F, 0.4F, "Load Game");
 					exit.CreateButton (0.5F, 0.3F, "Exit Game");
 
+					menuOptions1 = MenuOptions1.start;
+
 					start.selected = true;
+					load.selected = false;
 					exit.selected = false;
 
 					pvp.enabled = false;
@@ -161,6 +172,7 @@ public class MenuManager : MonoBehaviour
 					load3.enabled = false;
 					load4.enabled = false;
 					load5.enabled = false;
+					pageViewer.enabled = false;
 
 					updateNeeded = false;
 				}
@@ -196,34 +208,34 @@ public class MenuManager : MonoBehaviour
 					load.enabled = false;
 					exit.enabled = false;
 
+					load1.enabled = false;
+					load2.enabled = false;
+					load3.enabled = false;
+					load4.enabled = false;
+					load5.enabled = false;
+
 					string[] names = fileManager.GetLogNames (currentLoadPage);
 
 					if (names [0] != null)
 						load1.CreateButton (0.5F, 0.65F, names [0]);
-					else
-						highestLoadPage = currentLoadPage;
 					if (names [1] != null)
 						load2.CreateButton (0.5F, 0.55F, names [1]);
-					else
-						highestLoadPage = currentLoadPage;
 					if (names [2] != null)
 						load3.CreateButton (0.5F, 0.45F, names [2]);
-					else
-						highestLoadPage = currentLoadPage;
 					if (names [3] != null)
 						load4.CreateButton (0.5F, 0.35F, names [3]);
-					else
-						highestLoadPage = currentLoadPage;
 					if (names [4] != null)
 						load5.CreateButton (0.5F, 0.25F, names [4]);
-					else
-						highestLoadPage = currentLoadPage;
 
 					load1.selected = true;
 					load2.selected = false;
 					load3.selected = false;
 					load4.selected = false;
 					load5.selected = false;
+
+					highestLoadPage = fileManager.GetNumberOfPages ();
+
+					pageViewer.CreateButton (0.5F, 0.1F, "Page " + (currentLoadPage + 1) + " / " + (highestLoadPage + 1));
 
 					updateNeeded = false;
 				}
@@ -545,7 +557,11 @@ public class MenuManager : MonoBehaviour
 	
 	public void GoToMenu ()
 	{
-		fileManager.EndLog ();
+		try {
+			fileManager.EndLog ();
+		} catch {
+			Debug.Log ("Tried to close a non-existant filestream");
+		}
 		titleManager.enabled = true;
 		inMenu = true;
 		menuState = MenuState.main;
@@ -568,7 +584,8 @@ public class MenuManager : MonoBehaviour
 	public void StartGame (int gameType)
 	{
 		boardBehaviour.filemanager = fileManager;
-		fileManager.CreateLog (gameType);
+		if (gameType != 3)
+			fileManager.CreateLog (gameType);
 		titleManager.enabled = false;
 		inMenu = false;
 		camera.transform.position = new Vector3 (-0.64F, -0.64F, -10);
