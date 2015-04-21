@@ -3,9 +3,10 @@ using System.Collections;
 
 public class BoardBehaviour : MonoBehaviour
 {
+	public FileManager filemanager;
 
 	public int currentPlayer;	//1 = player 1, 2 = player 2, 0 = neither (this can be used to add waiting times and to pause / stop the game), 3 = switching
-	int[,] board;				//The gameboard. A 0 indicates an uncaptured tile, whilst a 1 or a 2 indicates ownership by player 1 or 2 respectively.
+	public int[,] board;		//The gameboard. A 0 indicates an uncaptured tile, whilst a 1 or a 2 indicates ownership by player 1 or 2 respectively.
 
 	int nextPlayer;				//The player to swith to after waiting
 	public int player1Score;	//Player 1's score
@@ -94,8 +95,10 @@ public class BoardBehaviour : MonoBehaviour
 	}
 
 	//Set the state of the tile at the passed co-ordinates and update all other tiles accordingly
-	public void SetTileState (int x, int y, int owner)
+	public void SetTileState (int x, int y, int owner, bool log = true)
 	{
+		if (log)
+			filemanager.AddTurnToLog (x, y, owner);
 		int enemy;
 		board [x, y] = owner;
 

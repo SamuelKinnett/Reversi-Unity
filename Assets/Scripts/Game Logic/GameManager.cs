@@ -69,6 +69,9 @@ public class GameManager : MonoBehaviour
 			bot1.Initialise (1, 1); //Initialise 1 Greedy AI as player 1
 			bot2.Initialise (1, 2); //Initilaise 1 Greedy AI as player 2
 			break;
+
+		case 3:	//Watching a loaded game
+			break;
 			
 		}
 

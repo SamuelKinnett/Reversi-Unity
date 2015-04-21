@@ -28,6 +28,7 @@ public class ButtonController : MonoBehaviour
 	{
 
 		this.transform.position = Camera.main.ViewportToWorldPoint (new Vector3 (x, y, 8.9F));
+		textMesh.text = contents;
 		enabled = true;
 		fade = true;
 	}

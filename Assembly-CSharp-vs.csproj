@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{C816F625-6DD5-24CE-D8AC-AA78FCE5B284}</ProjectGuid>
+	<ProjectGuid>{9BEED7A1-4387-5B1C-BE46-A845979B8EDE}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -63,6 +63,7 @@
      <Compile Include="Assets\Scripts\Graphics\BackgroundColourChanger.cs" />
      <Compile Include="Assets\Scripts\Graphics\ShadowControl.cs" />
      <Compile Include="Assets\Scripts\Graphics\ShadowManager.cs" />
+     <Compile Include="Assets\Scripts\IO\FileManager.cs" />
      <Compile Include="Assets\Scripts\Shaders\ShaderController.cs" />
      <None Include="Assets\Shaders\CRT.shader" />
  <Reference Include="UnityEngine.UI">
