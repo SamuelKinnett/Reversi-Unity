@@ -39,6 +39,7 @@ public class MonteCarlo : ScriptableObject, AI
 		}
 		Array.Copy (boardBehaviour.board, tree.board, boardBehaviour.board.Length);
 
+		//Create a tree containing every possible move the AI can make right now and every subsequent move the enemy could make.
 		tree.next = GetBranches (tree, 1);
 
 	}
@@ -53,6 +54,7 @@ public class MonteCarlo : ScriptableObject, AI
 		if (depth > 2)
 			return null;
 
+		//Work out who the current player is
 		if (playerNumber == 1)
 		if (depth == 1)
 			currentPlayer = 1;
@@ -64,7 +66,7 @@ public class MonteCarlo : ScriptableObject, AI
 		else
 			currentPlayer = 1;
 
-
+		//Calculate how many possible moves there are and thus how many branches we need
 		for (int y = 0; y < 7; y++) {
 			for (int x = 0; x < 7; x++) {
 				if (boardBehaviour.CanPlaceTile (x, y, currentPlayer))
@@ -75,6 +77,7 @@ public class MonteCarlo : ScriptableObject, AI
 		int currentBranch = 0;
 		branches = new node[numberOfBranches];
 
+		//For each possible branch, simulate a turn
 		for (int y = 0; y < 7; y++) {
 			for (int x = 0; x < 7; x++) {
 				if (boardBehaviour.CanPlaceTile (x, y, currentPlayer)) {
@@ -83,15 +86,36 @@ public class MonteCarlo : ScriptableObject, AI
 			}
 		}
 
+		//For each possible branch, get their branches
+		for (int i = 0; i < numberOfBranches; i++) {
+			branches [i].next = GetBranches (branches [i], depth + 1);
+		}
+
 		return branches;
 	}
 
 	node SimulateTurn (int x, int y, int player, node root)
 	{
+		node returnNode = new node ();
 		int[,] testMap = new int[8, 8];
 
+		//Copy the root node's board state to a temporary variable
 		Array.Copy (root.board, testMap, root.board.Length);
 
-		testMap = boardBehaviour.SetTileState (x, y, player, testMap, false);
+		//Simulate the move
+		testMap = boardBehaviour.SetTileState (x, y, player, testMap);
+
+		//Calculate the new scores
+		for (int tempY = 0; tempY < 8; tempY++) {
+			for (int tempX = 0; tempX < 8; tempX++) {
+				if (testMap [tempX, tempY] == playerNumber)
+					returnNode.myScore++;
+				else if (testMap [tempX, tempY] != 0)
+					returnNode.enemyScore++;
+			}
+		}
+
+		//Return the node
+		return returnNode;
 	}
 }
