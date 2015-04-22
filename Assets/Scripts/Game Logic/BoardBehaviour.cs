@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class BoardBehaviour : MonoBehaviour
 {
@@ -108,9 +109,19 @@ public class BoardBehaviour : MonoBehaviour
 
 	}
 
+	//Checks if a tile can be placed on the map
 	public bool CanPlaceTile (int x, int y, int owner)
 	{
 		if (GetTileScore (x, y, owner) > 0)
+			return true;
+		else
+			return false;
+	}
+
+	//Checks if a tile can be placed on a theoretical map
+	public bool CanPlaceTile (int x, int y, int owner, int[,] aiMap)
+	{
+		if (GetTileScore (x, y, owner, aiMap) > 0)
 			return true;
 		else
 			return false;
@@ -385,11 +396,285 @@ public class BoardBehaviour : MonoBehaviour
 
 	}
 
+	//Simulates a turn without actually modifying the map. Returns the board.
+	public int[,] SetTileState (int x, int y, int owner, int[,] aiMap, bool log = true)
+	{
+		if (log)
+			filemanager.AddTurnToLog (x, y, owner);
+		int enemy;
+
+		int[,] testMap = new int[8, 8];
+		Array.Copy (aiMap, testMap, aiMap.Length);
+
+		testMap [x, y] = owner;
+		
+		if (owner == 1)
+			enemy = 2;
+		else
+			enemy = 1;
+		
+		#region Test Right
+		int length = 0;
+		bool endFound = false;
+		bool endSearch = false;
+		bool enemyPassed = false;
+		
+		for (int currentX = x + 1; currentX < 8; currentX ++) {
+			
+			if ((testMap [currentX, y] == owner || endFound == true) && !endSearch) {
+				endFound = true;
+				endSearch = true;
+			} else if (testMap [currentX, y] == enemy && !endSearch) {
+				enemyPassed = true;
+				length++;
+			} else {
+				endSearch = true;
+			}
+		}
+		if (endFound && enemyPassed) {
+			length++;
+			for (int currentX = x + 1; currentX < x + length; currentX ++) {
+				testMap [currentX, y] = owner;
+			}
+		}
+		#endregion
+		
+		#region Test Left
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		for (int currentX = x - 1; currentX >= 0; currentX --) {
+			
+			if ((testMap [currentX, y] == owner || endFound == true) && !endSearch) {
+				endFound = true;
+				endSearch = true;
+			} else if (testMap [currentX, y] == enemy && !endSearch) {
+				enemyPassed = true;
+				length++;
+			} else {
+				endSearch = true;
+			}
+		}
+		if (endFound && enemyPassed) {
+			length++;
+			for (int currentX = x - 1; currentX > x - length; currentX --) {
+				testMap [currentX, y] = owner;
+			}
+		}
+		#endregion
+		
+		#region Test Upwards
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		
+		
+		for (int currentY = y - 1; currentY >= 0; currentY --) {
+			
+			if ((testMap [x, currentY] == owner || endFound == true) && !endSearch) {
+				endFound = true;
+				endSearch = true;
+			} else if (testMap [x, currentY] == enemy && !endSearch) {
+				enemyPassed = true;
+				length++;
+			} else {
+				endSearch = true;
+			}
+		}
+		if (endFound && enemyPassed) {
+			length++;
+			for (int currentY = y - 1; currentY >= y - length; currentY --) {
+				testMap [x, currentY] = owner;
+			}
+		}
+		#endregion
+		
+		#region Test Downwards
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		for (int currentY = y + 1; currentY < 8; currentY ++) {
+			
+			if ((testMap [x, currentY] == owner || endFound == true) && !endSearch) {
+				endFound = true;
+				endSearch = true;
+			} else if (testMap [x, currentY] == enemy && !endSearch) {
+				enemyPassed = true;
+				length++;
+			} else {
+				endSearch = true;
+			}
+		}
+		if (endFound && enemyPassed) {
+			length++;
+			for (int currentY = y + 1; currentY < y + length; currentY ++) {
+				testMap [x, currentY] = owner;
+			}
+		}
+		#endregion
+		
+		#region Test Up-Right
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		int diagY = y - 1;
+		
+		for (int currentX = x + 1; currentX < 8; currentX ++) {
+			if (diagY > 0) {
+				
+				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
+					endFound = true;
+					endSearch = true;
+				} else if (testMap [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
+					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY--;
+			}
+		}
+		
+		diagY = y - 1;
+		
+		if (endFound && enemyPassed) {
+			length++;
+			for (int currentX = x + 1; currentX < x + length; currentX ++) {
+				if (diagY > 0) {
+					testMap [currentX, diagY] = owner;
+					diagY--;
+				}
+			}
+		}
+		#endregion
+		
+		#region Up-Left
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		diagY = y - 1;
+		
+		for (int currentX = x - 1; currentX >= 0; currentX --) {
+			if (diagY > 0) {
+				
+				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
+					endFound = true;
+					endSearch = true;
+				} else if (testMap [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
+					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY--;
+			}
+		}
+		
+		diagY = y - 1;
+		
+		if (endFound) {
+			length++;
+			for (int currentX = x - 1; currentX > x - length; currentX --) {
+				if (diagY > 0) {
+					testMap [currentX, diagY] = owner;
+					diagY--;
+				}
+			}
+		}
+		#endregion
+		
+		#region Down-Right
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		diagY = y + 1;
+		
+		for (int currentX = x + 1; currentX < 8; currentX ++) {
+			if (diagY < 7) {
+				
+				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
+					endFound = true;
+					endSearch = true;
+				} else if (testMap [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
+					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY++;
+			}
+		}
+		
+		diagY = y + 1;
+		
+		if (endFound) {
+			length++;
+			for (int currentX = x + 1; currentX < x + length; currentX ++) {
+				if (diagY < 7) {
+					testMap [currentX, diagY] = owner;
+					diagY++;
+				}
+			}
+		}
+		#endregion
+		
+		#region Down-Left
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		diagY = y + 1;
+		
+		for (int currentX = x - 1; currentX >= 0; currentX --) {
+			if (diagY < 7) {
+				
+				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
+					endFound = true;
+					endSearch = true;
+				} else if (testMap [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
+					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY++;
+			}
+		}
+		
+		diagY = y + 1;
+		
+		if (endFound && enemyPassed) {
+			length++;
+			for (int currentX = x - 1; currentX >= x - length; currentX --) {
+				if (diagY < 7) {
+					testMap [currentX, diagY] = owner;
+					diagY++;
+				}
+			}
+		}
+		#endregion
+
+		return testMap;
+	}
+
 	//Returns an integer representing the number of tiles that will be converted should a tile be placed at the passed co-ordinates
 	public int GetTileScore (int x, int y, int owner)
 	{
 
-		int score = 0;	//The ammount of tiles that will be converted should this tile be captured.
+		int score = 0;	//The ammount of tiles that will be converted should this tile be captured
 		int enemy;
 
 		if (owner == 1)
@@ -612,6 +897,238 @@ public class BoardBehaviour : MonoBehaviour
 		#endregion
 
 
+		return score;
+	}
+
+	//Returns an integer representing the number of tiles that will be converted should a tile be placed at the passed co-ordinates on a theoretical map
+	public int GetTileScore (int x, int y, int owner, int[,] aiMap)
+	{
+		int[,] testMap = new int[8, 8];
+		Array.Copy (aiMap, testMap, aiMap.Length);
+
+		int score = 0;	//The ammount of tiles that will be converted should this tile be captured
+		int enemy;
+
+		if (owner == 1)
+			enemy = 2;
+		else
+			enemy = 1;
+		
+		#region Test Right
+		int length = 0;
+		bool endFound = false;
+		bool endSearch = false;
+		bool enemyPassed = false;
+		
+		for (int currentX = x + 1; currentX < 8; currentX ++) {
+			
+			if ((testMap [currentX, y] == owner || endFound == true) && !endSearch) {
+				endFound = true;
+				endSearch = true;
+			} else if (testMap [currentX, y] == enemy && !endSearch) {
+				enemyPassed = true;
+				length++;
+			} else {
+				endSearch = true;
+			}
+		}
+		if (endFound && enemyPassed) {
+			score += length;
+		}
+		#endregion
+		
+		#region Test Left
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		for (int currentX = x - 1; currentX >= 0; currentX --) {
+			
+			if ((testMap [currentX, y] == owner || endFound == true) && !endSearch) {
+				endFound = true;
+				endSearch = true;
+			} else if (testMap [currentX, y] == enemy && !endSearch) {
+				enemyPassed = true;
+				length++;
+			} else {
+				endSearch = true;
+			}
+		}
+		if (endFound && enemyPassed) {
+			score += length;
+		}
+		#endregion
+		
+		#region Test Upwards
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		for (int currentY = y - 1; currentY >= 0; currentY --) {
+			
+			if ((testMap [x, currentY] == owner || endFound == true) && !endSearch) {
+				endFound = true;
+				endSearch = true;
+			} else if (testMap [x, currentY] == enemy && !endSearch) {
+				enemyPassed = true;
+				length++;
+			} else {
+				endSearch = true;
+			}
+		}
+		if (endFound && enemyPassed) {
+			score += length;
+		}
+		#endregion
+		
+		#region Test Downwards
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		for (int currentY = y + 1; currentY < 8; currentY ++) {
+			
+			if ((testMap [x, currentY] == owner || endFound == true) && !endSearch) {
+				endFound = true;
+				endSearch = true;
+			} else if (testMap [x, currentY] == enemy && !endSearch) {
+				enemyPassed = true;
+				length++;
+			} else {
+				endSearch = true;
+			}
+		}
+		if (endFound && enemyPassed) {
+			score += length;
+		}
+		#endregion
+		
+		#region Test Up-Right
+		length = 0;
+		endFound = false;
+		endSearch = false;
+		enemyPassed = false;
+		
+		int diagY = y - 1;
+		
+		for (int currentX = x + 1; currentX < 8; currentX ++) {
+			if (diagY >= 0) {
+				
+				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
+					endFound = true;
+					endSearch = true;
+				} else if (testMap [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
+					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY--;
+			}
+		}
+		
+		diagY = y;
+		
+		if (endFound && enemyPassed) {
+			score += length;
+		}
+		#endregion
+		
+		#region Up-Left
+		length = 0;
+		endSearch = false;
+		endFound = false;
+		
+		diagY = y - 1;
+		
+		for (int currentX = x - 1; currentX >= 0; currentX --) {
+			if (diagY >= 0) {
+				
+				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
+					endFound = true;
+					endSearch = true;
+				} else if (testMap [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
+					length++;
+				} else {
+					endSearch = true;
+				}
+				
+				diagY--;
+			}
+		}
+		
+		diagY = y;
+		
+		if (endFound && enemyPassed) {
+			score += length;
+		}
+		#endregion
+		
+		#region Down-Right
+		length = 0;
+		endSearch = false;
+		endFound = false;
+		
+		diagY = y + 1;
+		
+		for (int currentX = x + 1; currentX < 8; currentX ++) {
+			if (diagY < 7) {
+				
+				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
+					endFound = true;
+					endSearch = true;
+				} else if (testMap [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
+					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY++;
+			}
+		}
+		
+		diagY = y;
+		
+		if (endFound && enemyPassed) {
+			score += length;
+		}
+		#endregion
+		
+		#region Down-Left
+		length = 0;
+		endSearch = false;
+		endFound = false;
+		
+		diagY = y + 1;
+		
+		for (int currentX = x - 1; currentX >= 0; currentX --) {
+			if (diagY < 7) {
+				
+				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
+					endFound = true;
+					endSearch = true;
+				} else if (testMap [currentX, diagY] == enemy && !endSearch) {
+					enemyPassed = true;
+					length++;
+				} else {
+					endSearch = true;
+				}
+				diagY++;
+			}
+		}
+		
+		diagY = y;
+		
+		if (endFound && enemyPassed) {
+			score += length;
+		}
+		#endregion
+		
+		
 		return score;
 	}
 
