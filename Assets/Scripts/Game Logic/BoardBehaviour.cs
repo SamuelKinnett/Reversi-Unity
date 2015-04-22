@@ -498,7 +498,7 @@ public class BoardBehaviour : MonoBehaviour
 		int diagY = y - 1;
 		
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
-			if (diagY > 0) {
+			if (diagY >= 0) {
 				
 				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
@@ -528,7 +528,7 @@ public class BoardBehaviour : MonoBehaviour
 		diagY = y - 1;
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
-			if (diagY > 0) {
+			if (diagY >= 0) {
 				
 				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
