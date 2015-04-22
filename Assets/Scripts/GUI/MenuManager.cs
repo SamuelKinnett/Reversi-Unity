@@ -42,6 +42,7 @@ public class MenuManager : MonoBehaviour
 	public GameObject button4Object;
 	public GameObject button5Object;
 	public GameObject pageIndicator;
+	public GameObject versionInfo;
 
 	public GameObject gameController;
 	public GameObject boardManager;
@@ -61,6 +62,8 @@ public class MenuManager : MonoBehaviour
 	private ButtonController button5;
 
 	private ButtonController pageViewer;
+	private ButtonController version;
+
 	int currentLoadPage;
 	int highestLoadPage;
 	GameInfo gameInfo;
@@ -98,6 +101,7 @@ public class MenuManager : MonoBehaviour
 		button4 = button4Object.GetComponent<ButtonController> ();
 		button5 = button5Object.GetComponent<ButtonController> ();
 		pageViewer = pageIndicator.GetComponent<ButtonController> ();
+		version = versionInfo.GetComponent<ButtonController> ();
 
 		currentLoadPage = 0;
 
@@ -134,6 +138,7 @@ public class MenuManager : MonoBehaviour
 
 				if (updateNeeded) {
 					titleManager.enabled = true;
+					version.CreateButton (0.5F, 0.1F, "Reversi V0.1a, ©1988 Samuel Kinnett Software");
 					button1.CreateButton (0.5F, 0.5F, "Start Game");
 					button2.CreateButton (0.5F, 0.4F, "Load Game");
 					button3.CreateButton (0.5F, 0.3F, "Exit Game");
@@ -159,6 +164,7 @@ public class MenuManager : MonoBehaviour
 
 				if (updateNeeded) {
 					titleManager.enabled = false;
+					version.enabled = false;
 
 					button1.CreateButton (0.5F, 0.6F, "Player v Player");
 					button2.CreateButton (0.5F, 0.5F, "Player v AI");
@@ -184,6 +190,7 @@ public class MenuManager : MonoBehaviour
 				if (updateNeeded) {
 
 					titleManager.enabled = false;
+					version.enabled = false;
 					string output;
 
 					GameInfo[] names = fileManager.GetLogNames (currentLoadPage);

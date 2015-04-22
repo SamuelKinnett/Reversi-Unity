@@ -313,15 +313,37 @@ public class FileManager : MonoBehaviour
 
 			replayInfo.CreateButton (0.8F, 0.9F, ReturnGameInfo ());
 
+			// Go back a turn if the left arrow or the A key are pressed.
 			if (Input.GetKeyDown (KeyCode.LeftArrow) || Input.GetKeyDown (KeyCode.A)) {
 				if (currentTurn > 0) {
 					currentTurn--;
 					SetTurn (currentTurn);
 				}
 			}
+			//Move forward a turn if the right arrow or the D key are pressed.
 			if (Input.GetKeyDown (KeyCode.RightArrow) || Input.GetKeyDown (KeyCode.D)) {
 				if (currentTurn < maxTurn) {
 					currentTurn++;
+					SetTurn (currentTurn);
+				}
+			}
+			//Move forward 10 turns if the up arrow or the W key are pressed.
+			if (Input.GetKeyDown (KeyCode.UpArrow) || Input.GetKeyDown (KeyCode.W)) {
+				if ((currentTurn + 10) < maxTurn) {
+					currentTurn += 10;
+					SetTurn (currentTurn);
+				} else {
+					currentTurn = maxTurn;
+					SetTurn (currentTurn);
+				}
+			}
+			//Move backwards 10 turns if the down arrow or the S key are pressed.
+			if (Input.GetKeyDown (KeyCode.DownArrow) || Input.GetKeyDown (KeyCode.S)) {
+				if ((currentTurn - 10) > 0) {
+					currentTurn -= 10;
+					SetTurn (currentTurn);
+				} else {
+					currentTurn = 0;
 					SetTurn (currentTurn);
 				}
 			}

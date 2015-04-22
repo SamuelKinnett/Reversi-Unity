@@ -32,6 +32,7 @@ public class ButtonController : MonoBehaviour
 
 		this.transform.position = Camera.main.ViewportToWorldPoint (new Vector3 (x, y, 8.9F));
 		defaultScale = originalScale;
+		this.transform.localScale = defaultScale;
 		maxSize = 0.70F;
 		textMesh.text = contents;
 		enabled = true;
@@ -41,6 +42,7 @@ public class ButtonController : MonoBehaviour
 	public void SetScale (float scale)
 	{
 		defaultScale = new Vector3 (scale, scale, 0);
+		this.transform.localScale = defaultScale;
 		maxSize = 0.70F * (defaultScale.x / originalScale.x);
 	}
 	// Update is called once per frame

@@ -63,6 +63,7 @@
      <Compile Include="Assets\Scripts\Graphics\BackgroundColourChanger.cs" />
      <Compile Include="Assets\Scripts\Graphics\ShadowControl.cs" />
      <Compile Include="Assets\Scripts\Graphics\ShadowManager.cs" />
+     <Compile Include="Assets\Scripts\Graphics\TextShadowController.cs" />
      <Compile Include="Assets\Scripts\IO\FileManager.cs" />
      <Compile Include="Assets\Scripts\Shaders\ShaderController.cs" />
      <None Include="Assets\Shaders\CRT.shader" />
