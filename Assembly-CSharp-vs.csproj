@@ -50,6 +50,7 @@
      <Compile Include="Assets\Scripts\AI\AIManager.cs" />
      <Compile Include="Assets\Scripts\AI\GreedyAI.cs" />
      <Compile Include="Assets\Scripts\AI\MonteCarlo.cs" />
+     <Compile Include="Assets\Scripts\AI\MonteCarlo2.cs" />
      <Compile Include="Assets\Scripts\Camera\MoveCamera.cs" />
      <Compile Include="Assets\Scripts\GUI\ButtonController.cs" />
      <Compile Include="Assets\Scripts\GUI\EndgameInfoController.cs" />

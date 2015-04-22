@@ -29,6 +29,11 @@ public class AIManager : MonoBehaviour
 			bot = new GreedyAI (boardManager, playerNumber);
 			enabled = true;
 			break;
+
+		case 2:
+			bot = new MonteCarlo (boardManager, playerNumber);
+			enabled = true;
+			break;
 		}
 	}
 	
