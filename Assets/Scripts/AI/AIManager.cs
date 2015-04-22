@@ -31,7 +31,7 @@ public class AIManager : MonoBehaviour
 			break;
 
 		case 2:
-			bot = new MonteCarlo (boardManager, playerNumber);
+			bot = new MonteCarlo2 (boardManager, playerNumber);
 			enabled = true;
 			break;
 		}

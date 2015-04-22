@@ -255,7 +255,7 @@ public class BoardBehaviour : MonoBehaviour
 		int diagY = y - 1;
 
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
-			if (diagY > 0) {
+			if (diagY >= 0) {
 
 				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
@@ -275,7 +275,7 @@ public class BoardBehaviour : MonoBehaviour
 		if (endFound && enemyPassed) {
 			length++;
 			for (int currentX = x + 1; currentX < x + length; currentX ++) {
-				if (diagY > 0) {
+				if (diagY >= 0) {
 					board [currentX, diagY] = owner;
 					diagY--;
 				}
@@ -292,7 +292,7 @@ public class BoardBehaviour : MonoBehaviour
 		diagY = y - 1;
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
-			if (diagY > 0) {
+			if (diagY >= 0) {
 
 				if ((board [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
@@ -312,7 +312,7 @@ public class BoardBehaviour : MonoBehaviour
 		if (endFound) {
 			length++;
 			for (int currentX = x - 1; currentX > x - length; currentX --) {
-				if (diagY > 0) {
+				if (diagY >= 0) {
 					board [currentX, diagY] = owner;
 					diagY--;
 				}
@@ -526,7 +526,7 @@ public class BoardBehaviour : MonoBehaviour
 		int diagY = y - 1;
 		
 		for (int currentX = x + 1; currentX < 8; currentX ++) {
-			if (diagY > 0) {
+			if (diagY >= 0) {
 				
 				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
@@ -546,7 +546,7 @@ public class BoardBehaviour : MonoBehaviour
 		if (endFound && enemyPassed) {
 			length++;
 			for (int currentX = x + 1; currentX < x + length; currentX ++) {
-				if (diagY > 0) {
+				if (diagY >= 0) {
 					testMap [currentX, diagY] = owner;
 					diagY--;
 				}
@@ -563,7 +563,7 @@ public class BoardBehaviour : MonoBehaviour
 		diagY = y - 1;
 		
 		for (int currentX = x - 1; currentX >= 0; currentX --) {
-			if (diagY > 0) {
+			if (diagY >= 0) {
 				
 				if ((testMap [currentX, diagY] == owner || endFound == true) && !endSearch) {
 					endFound = true;
@@ -583,7 +583,7 @@ public class BoardBehaviour : MonoBehaviour
 		if (endFound) {
 			length++;
 			for (int currentX = x - 1; currentX > x - length; currentX --) {
-				if (diagY > 0) {
+				if (diagY >= 0) {
 					testMap [currentX, diagY] = owner;
 					diagY--;
 				}

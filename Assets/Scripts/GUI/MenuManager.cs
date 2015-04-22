@@ -658,6 +658,8 @@ public class MenuManager : MonoBehaviour
 			Debug.Log ("Tried to close a non-existant filestream");
 		}
 		titleManager.enabled = true;
+		boardBehaviour.winner = 0;
+		endGameInfoController.enabled = false;
 		inMenu = true;
 		menuState = MenuState.main;
 		menuOptions1 = MenuOptions1.start;
