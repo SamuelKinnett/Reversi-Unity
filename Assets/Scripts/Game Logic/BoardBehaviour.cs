@@ -13,6 +13,7 @@ public class BoardBehaviour : MonoBehaviour
 	public int player2Score;	//Player 2's score
 	float time;					//Used to wait after a turn has been played
 	bool switching;				//True when the turn is currently switching
+	bool movePossible;			//True if the current player is capable of moving
 
 	public int winner;			//0 = no current winner, 1 = player 1, 2 = player 2, 3 = draw
 
@@ -25,6 +26,8 @@ public class BoardBehaviour : MonoBehaviour
 		board [3, 4] = 2;
 		board [4, 3] = 2;
 		board [4, 4] = 1;
+
+		movePossible = true;
 
 	}
 	
@@ -62,7 +65,7 @@ public class BoardBehaviour : MonoBehaviour
 			}
 		}
 
-		if (boardFull) {
+		if (boardFull || !movePossible) {
 			currentPlayer = 0;
 
 			if (player1NewScore > player2NewScore)
@@ -71,11 +74,30 @@ public class BoardBehaviour : MonoBehaviour
 				winner = 2;
 			else
 				winner = 3;
-		}
+		} else
+			winner = 0;
 
 		player1Score = player1NewScore;
 		player2Score = player2NewScore;
 		
+	}
+
+	//Returns true if the current player can make a move
+	private bool MovePossible (int currentPlayer)
+	{
+		if (currentPlayer == 0)
+			return true;
+
+		bool canMove = false;
+
+		for (int x = 0; x < 8; x++) {
+			for (int y = 0; y < 8; y++) {
+				if (GetTileScore (x, y, currentPlayer) > 0)
+					canMove = true;
+			}
+		}
+
+		return canMove;
 	}
 
 	//Get the owner of the tile at the passed co-ordinates
@@ -602,6 +624,7 @@ public class BoardBehaviour : MonoBehaviour
 				
 		currentPlayer = 3;
 		switching = true;
+		movePossible = MovePossible (nextPlayer);
 		time = 0;
 	}
 

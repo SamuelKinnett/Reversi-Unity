@@ -36,17 +36,11 @@ public class MenuManager : MonoBehaviour
 
 	public GameObject title;
 
-	public GameObject startButton;
-	public GameObject loadButton;
-	public GameObject exitButton;
-	public GameObject pvpButton;
-	public GameObject pvaButton;
-	public GameObject avaButton;
-	public GameObject loadButton1;
-	public GameObject loadButton2;
-	public GameObject loadButton3;
-	public GameObject loadButton4;
-	public GameObject loadButton5;
+	public GameObject button1Object;
+	public GameObject button2Object;
+	public GameObject button3Object;
+	public GameObject button4Object;
+	public GameObject button5Object;
 	public GameObject pageIndicator;
 
 	public GameObject gameController;
@@ -60,20 +54,16 @@ public class MenuManager : MonoBehaviour
 	private EndgameInfoController endGameInfoController;
 	private FileManager fileManager;
 
-	private ButtonController start;
-	private ButtonController load;
-	private ButtonController exit;
-	private ButtonController pvp;
-	private ButtonController pva;
-	private ButtonController ava;
-	private ButtonController load1;
-	private ButtonController load2;
-	private ButtonController load3;
-	private ButtonController load4;
-	private ButtonController load5;
+	private ButtonController button1;
+	private ButtonController button2;
+	private ButtonController button3;
+	private ButtonController button4;
+	private ButtonController button5;
+
 	private ButtonController pageViewer;
 	int currentLoadPage;
 	int highestLoadPage;
+	GameInfo gameInfo;
 
 	private MenuState menuState;
 	private MenuOptions1 menuOptions1;
@@ -102,22 +92,16 @@ public class MenuManager : MonoBehaviour
 
 		updateNeeded = true;
 
-		start = startButton.GetComponent<ButtonController> ();
-		load = loadButton.GetComponent<ButtonController> ();
-		exit = exitButton.GetComponent<ButtonController> ();
-		pvp = pvpButton.GetComponent<ButtonController> ();
-		pva = pvaButton.GetComponent<ButtonController> ();
-		ava = avaButton.GetComponent<ButtonController> ();
+		button1 = button1Object.GetComponent<ButtonController> ();
+		button2 = button2Object.GetComponent<ButtonController> ();
+		button3 = button3Object.GetComponent<ButtonController> ();
+		button4 = button4Object.GetComponent<ButtonController> ();
+		button5 = button5Object.GetComponent<ButtonController> ();
 		pageViewer = pageIndicator.GetComponent<ButtonController> ();
 
-		load1 = loadButton1.GetComponent<ButtonController> ();
-		load2 = loadButton2.GetComponent<ButtonController> ();
-		load3 = loadButton3.GetComponent<ButtonController> ();
-		load4 = loadButton4.GetComponent<ButtonController> ();
-		load5 = loadButton5.GetComponent<ButtonController> ();
 		currentLoadPage = 0;
 
-		start.selected = true;
+		button1.selected = true;
 		
 		titleManager.enabled = true;
 		inMenu = true;
@@ -133,14 +117,11 @@ public class MenuManager : MonoBehaviour
 			menuState = MenuState.main;
 			updateNeeded = true;
 			
-			pvp.selected = false;
-			pva.selected = false;
-			ava.selected = false;
-			load1.selected = false;
-			load2.selected = false;
-			load3.selected = false;
-			load4.selected = false;
-			load5.selected = false;
+			button1.selected = true;
+			button2.selected = false;
+			button3.selected = false;
+			button4.selected = false;
+			button5.selected = false;
 			
 		} else if (inMenu && Input.GetKeyDown (KeyCode.Escape))
 			Application.Quit ();
@@ -153,25 +134,20 @@ public class MenuManager : MonoBehaviour
 
 				if (updateNeeded) {
 					titleManager.enabled = true;
-					start.CreateButton (0.5F, 0.5F, "Start Game");
-					load.CreateButton (0.5F, 0.4F, "Load Game");
-					exit.CreateButton (0.5F, 0.3F, "Exit Game");
+					button1.CreateButton (0.5F, 0.5F, "Start Game");
+					button2.CreateButton (0.5F, 0.4F, "Load Game");
+					button3.CreateButton (0.5F, 0.3F, "Exit Game");
+					button4.enabled = false;
+					button5.enabled = false;
 
 					menuOptions1 = MenuOptions1.start;
 
-					start.selected = true;
-					load.selected = false;
-					exit.selected = false;
+					button1.selected = true;
+					button2.selected = false;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 
-					pvp.enabled = false;
-					pva.enabled = false;
-					ava.enabled = false;
-
-					load1.enabled = false;
-					load2.enabled = false;
-					load3.enabled = false;
-					load4.enabled = false;
-					load5.enabled = false;
 					pageViewer.enabled = false;
 
 					updateNeeded = false;
@@ -183,16 +159,20 @@ public class MenuManager : MonoBehaviour
 
 				if (updateNeeded) {
 					titleManager.enabled = false;
-					start.enabled = false;
-					load.enabled = false;
-					exit.enabled = false;
-					pvp.CreateButton (0.5F, 0.6F, "Player v Player");
-					pva.CreateButton (0.5F, 0.5F, "Player v AI");
-					ava.CreateButton (0.5F, 0.4F, "AI v AI");
 
-					pvp.selected = true;
-					pva.selected = false;
-					ava.selected = false;
+					button1.CreateButton (0.5F, 0.6F, "Player v Player");
+					button2.CreateButton (0.5F, 0.5F, "Player v AI");
+					button3.CreateButton (0.5F, 0.4F, "AI v AI");
+					button4.enabled = false;
+					button5.enabled = false;
+
+					menuOptions2 = MenuOptions2.pvp;
+
+					button1.selected = true;
+					button2.selected = false;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 
 					updateNeeded = false;
 				}
@@ -204,34 +184,49 @@ public class MenuManager : MonoBehaviour
 				if (updateNeeded) {
 
 					titleManager.enabled = false;
-					start.enabled = false;
-					load.enabled = false;
-					exit.enabled = false;
+					string output;
 
-					load1.enabled = false;
-					load2.enabled = false;
-					load3.enabled = false;
-					load4.enabled = false;
-					load5.enabled = false;
+					GameInfo[] names = fileManager.GetLogNames (currentLoadPage);
 
-					string[] names = fileManager.GetLogNames (currentLoadPage);
+					button1.enabled = false;
+					button2.enabled = false;
+					button3.enabled = false;
+					button4.enabled = false;
+					button5.enabled = false;
 
-					if (names [0] != null)
-						load1.CreateButton (0.5F, 0.65F, names [0]);
-					if (names [1] != null)
-						load2.CreateButton (0.5F, 0.55F, names [1]);
-					if (names [2] != null)
-						load3.CreateButton (0.5F, 0.45F, names [2]);
-					if (names [3] != null)
-						load4.CreateButton (0.5F, 0.35F, names [3]);
-					if (names [4] != null)
-						load5.CreateButton (0.5F, 0.25F, names [4]);
+					if (names [0].gameType > -1) {
+						output = ReturnGameInfo (names [0]);
+						button1.CreateButton (0.5F, 0.65F, output);
+						button1.SetScale (0.35F);
+					}
+					if (names [1].gameType > -1) {
+						output = ReturnGameInfo (names [1]);
+						button2.CreateButton (0.5F, 0.55F, output);
+						button2.SetScale (0.35F);
+					}
+					if (names [2].gameType > -1) {
+						output = ReturnGameInfo (names [2]);
+						button3.CreateButton (0.5F, 0.45F, output);
+						button3.SetScale (0.35F);
+					}
+					if (names [3].gameType > -1) {
+						output = ReturnGameInfo (names [3]);
+						button4.CreateButton (0.5F, 0.35F, output);
+						button4.SetScale (0.35F);
+					}
+					if (names [4].gameType > -1) {
+						output = ReturnGameInfo (names [4]);
+						button5.CreateButton (0.5F, 0.25F, output);
+						button5.SetScale (0.35F);
+					}
 
-					load1.selected = true;
-					load2.selected = false;
-					load3.selected = false;
-					load4.selected = false;
-					load5.selected = false;
+					menuOptions3 = MenuOptions3.load1;
+
+					button1.selected = true;
+					button2.selected = false;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 
 					highestLoadPage = fileManager.GetNumberOfPages ();
 
@@ -273,18 +268,22 @@ public class MenuManager : MonoBehaviour
 				case MenuOptions1.start:
 
 					menuOptions1 = MenuOptions1.load;
-					start.selected = false;
-					load.selected = true;
-					exit.selected = false;
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 
 					break;
 
 				case MenuOptions1.load:
 
 					menuOptions1 = MenuOptions1.exit;
-					start.selected = false;
-					load.selected = false;
-					exit.selected = true;
+					button1.selected = false;
+					button2.selected = false;
+					button3.selected = true;
+					button4.selected = false;
+					button5.selected = false;
 
 					break;
 
@@ -299,18 +298,22 @@ public class MenuManager : MonoBehaviour
 				case MenuOptions2.pvp:
 
 					menuOptions2 = MenuOptions2.pva;
-					pvp.selected = false;
-					pva.selected = true;
-					ava.selected = false;
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 
 					break;
 
 				case MenuOptions2.pva:
 
 					menuOptions2 = MenuOptions2.ava;
-					pvp.selected = false;
-					pva.selected = false;
-					ava.selected = true;
+					button1.selected = false;
+					button2.selected = false;
+					button3.selected = true;
+					button4.selected = false;
+					button5.selected = false;
 					
 					break;
 
@@ -324,52 +327,52 @@ public class MenuManager : MonoBehaviour
 
 				case MenuOptions3.load1:
 
-					if (load2.enabled) {
+					if (button2.enabled) {
 						menuOptions3 = MenuOptions3.load2;
-						load1.selected = false;
-						load2.selected = true;
-						load3.selected = false;
-						load4.selected = false;
-						load5.selected = false;
+						button1.selected = false;
+						button2.selected = true;
+						button3.selected = false;
+						button4.selected = false;
+						button5.selected = false;
 					}
 
 					break;
 
 				case MenuOptions3.load2:
 					
-					if (load3.enabled) {
+					if (button3.enabled) {
 						menuOptions3 = MenuOptions3.load3;
-						load1.selected = false;
-						load2.selected = false;
-						load3.selected = true;
-						load4.selected = false;
-						load5.selected = false;
+						button1.selected = false;
+						button2.selected = false;
+						button3.selected = true;
+						button4.selected = false;
+						button5.selected = false;
 					}
 					
 					break;
 
 				case MenuOptions3.load3:
 					
-					if (load4.enabled) {
+					if (button4.enabled) {
 						menuOptions3 = MenuOptions3.load4;
-						load1.selected = false;
-						load2.selected = false;
-						load3.selected = false;
-						load4.selected = true;
-						load5.selected = false;
+						button1.selected = false;
+						button2.selected = false;
+						button3.selected = false;
+						button4.selected = true;
+						button5.selected = false;
 					}
 					
 					break;
 
 				case MenuOptions3.load4:
 					
-					if (load5.enabled) {
+					if (button5.enabled) {
 						menuOptions3 = MenuOptions3.load5;
-						load1.selected = false;
-						load2.selected = false;
-						load3.selected = false;
-						load4.selected = false;
-						load5.selected = true;
+						button1.selected = false;
+						button2.selected = false;
+						button3.selected = false;
+						button4.selected = false;
+						button5.selected = true;
 					}
 					
 					break;
@@ -391,18 +394,22 @@ public class MenuManager : MonoBehaviour
 				case MenuOptions1.load:
 					
 					menuOptions1 = MenuOptions1.start;
-					start.selected = true;
-					load.selected = false;
-					exit.selected = false;
+					button1.selected = true;
+					button2.selected = false;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 					
 					break;
 					
 				case MenuOptions1.exit:
 					
 					menuOptions1 = MenuOptions1.load;
-					start.selected = false;
-					load.selected = true;
-					exit.selected = false;
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 					
 					break;
 					
@@ -416,18 +423,22 @@ public class MenuManager : MonoBehaviour
 				case MenuOptions2.pva:
 
 					menuOptions2 = MenuOptions2.pvp;
-					pvp.selected = true;
-					pva.selected = false;
-					ava.selected = false;
+					button1.selected = true;
+					button2.selected = false;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 					
 					break;
 					
 				case MenuOptions2.ava:
 
 					menuOptions2 = MenuOptions2.pva;
-					pvp.selected = false;
-					pva.selected = true;
-					ava.selected = false;
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
 					
 					break;
 					
@@ -441,52 +452,52 @@ public class MenuManager : MonoBehaviour
 					
 				case MenuOptions3.load2:
 					
-					if (load1.enabled) {
+					if (button1.enabled) {
 						menuOptions3 = MenuOptions3.load1;
-						load1.selected = true;
-						load2.selected = false;
-						load3.selected = false;
-						load4.selected = false;
-						load5.selected = false;
+						button1.selected = true;
+						button2.selected = false;
+						button3.selected = false;
+						button4.selected = false;
+						button5.selected = false;
 					}
 					
 					break;
 					
 				case MenuOptions3.load3:
 					
-					if (load2.enabled) {
+					if (button2.enabled) {
 						menuOptions3 = MenuOptions3.load2;
-						load1.selected = false;
-						load2.selected = true;
-						load3.selected = false;
-						load4.selected = false;
-						load5.selected = false;
+						button1.selected = false;
+						button2.selected = true;
+						button3.selected = false;
+						button4.selected = false;
+						button5.selected = false;
 					}
 					
 					break;
 					
 				case MenuOptions3.load4:
 					
-					if (load3.enabled) {
+					if (button3.enabled) {
 						menuOptions3 = MenuOptions3.load3;
-						load1.selected = false;
-						load2.selected = false;
-						load3.selected = true;
-						load4.selected = false;
-						load5.selected = false;
+						button1.selected = false;
+						button2.selected = false;
+						button3.selected = true;
+						button4.selected = false;
+						button5.selected = false;
 					}
 					
 					break;
 					
 				case MenuOptions3.load5:
 					
-					if (load4.enabled) {
+					if (button4.enabled) {
 						menuOptions3 = MenuOptions3.load4;
-						load1.selected = false;
-						load2.selected = false;
-						load3.selected = false;
-						load4.selected = true;
-						load5.selected = false;
+						button1.selected = false;
+						button2.selected = false;
+						button3.selected = false;
+						button4.selected = true;
+						button5.selected = false;
 					}
 					
 					break;
@@ -500,43 +511,80 @@ public class MenuManager : MonoBehaviour
 		}
 
 		if (inMenu && (Input.GetKeyDown (KeyCode.Return) || Input.GetKeyDown (KeyCode.Space))) {
-			if (start.selected) {
-				start.selected = false;
-				menuState = MenuState.selectGameType;
-				updateNeeded = true;
-			}
-			if (load.selected) {
-				load.selected = false;
-				menuState = MenuState.loadGame;
-				updateNeeded = true;
-			}
-			if (exit.selected)
-				Application.Quit ();
-			if (pvp.selected)
-				StartGame (0);
-			if (pva.selected)
-				StartGame (1);
-			if (ava.selected)
-				StartGame (2);
-			if (load1.selected) {
-				fileManager.OpenLog (currentLoadPage * 5);
-				StartGame (3);
-			}
-			if (load2.selected) {
-				fileManager.OpenLog ((currentLoadPage * 5) + 1);
-				StartGame (3);
-			}
-			if (load3.selected) {
-				fileManager.OpenLog ((currentLoadPage * 5) + 2);
-				StartGame (3);
-			}
-			if (load4.selected) {
-				fileManager.OpenLog ((currentLoadPage * 5) + 3);
-				StartGame (3);
-			}
-			if (load5.selected) {
-				fileManager.OpenLog ((currentLoadPage * 5) + 4);
-				StartGame (3);
+
+			switch (menuState) {
+
+			case MenuState.main:
+				switch (menuOptions1) {
+
+				case MenuOptions1.start:
+					button1.selected = false;
+					menuState = MenuState.selectGameType;
+					updateNeeded = true;
+					break;
+
+				case MenuOptions1.load:
+					button2.selected = false;
+					menuState = MenuState.loadGame;
+					updateNeeded = true;
+					break;
+
+				case MenuOptions1.exit:
+					Application.Quit ();
+					break;
+				}
+				break;
+
+			case MenuState.selectGameType:
+				switch (menuOptions2) {
+
+				case MenuOptions2.pvp:
+					StartGame (0);
+					break;
+
+				case MenuOptions2.pva:
+					StartGame (1);
+					break;
+
+				case MenuOptions2.ava:
+					//TODO: Make a call to some kind of AI selection menu.
+					StartGame (2);
+					break;
+				}
+				break;
+
+			case MenuState.loadGame:
+
+				switch (menuOptions3) {
+
+				case MenuOptions3.load1:
+					fileManager.OpenLog (currentLoadPage * 5);
+					StartGame (3);
+					break;
+
+				case MenuOptions3.load2:
+					fileManager.OpenLog ((currentLoadPage * 5) + 1);
+					StartGame (3);
+					break;
+
+				case MenuOptions3.load3:
+					fileManager.OpenLog ((currentLoadPage * 5) + 2);
+					StartGame (3);
+					break;
+
+				case MenuOptions3.load4:
+					fileManager.OpenLog ((currentLoadPage * 5) + 3);
+					StartGame (3);
+					break;
+
+				case MenuOptions3.load5:
+					fileManager.OpenLog ((currentLoadPage * 5) + 4);
+					StartGame (3);
+					break;
+
+				}
+				break;
+
 			}
 		}
 
@@ -554,7 +602,47 @@ public class MenuManager : MonoBehaviour
 			}
 		}
 	}
-	
+
+	string ReturnGameInfo (GameInfo info)
+	{
+		string output = "";
+
+		output = info.date + " - ";
+
+		switch (info.gameType) {
+		case 0:
+			output += "PvP, ";
+			break;
+			
+		case 1:
+			output += "PvA, ";
+			break;
+			
+		case 2:
+			output += "AvA, ";
+			break;
+		}
+
+		output += info.turns + " turns, ";
+
+		switch (info.victor) {
+
+		case 1:
+			output += "P1 win";
+			break;
+
+		case 2:
+			output += "P2 win";
+			break;
+
+		case 3:
+			output += "Draw";
+			break;
+		}
+
+		return output;
+	}
+
 	public void GoToMenu ()
 	{
 		try {
@@ -574,11 +662,11 @@ public class MenuManager : MonoBehaviour
 		boardBehaviour.ResetBoard ();
 		updateNeeded = true;
 
-		start.selected = true;
-		exit.selected = false;
-		pvp.selected = false;
-		pva.selected = false;
-		ava.selected = false;
+		button1.selected = true;
+		button2.selected = false;
+		button3.selected = false;
+		button4.selected = false;
+		button5.selected = false;
 	}
 
 	public void StartGame (int gameType)

@@ -13,6 +13,8 @@ public class ButtonController : MonoBehaviour
 	//public bool clicked;
 	//public bool clickHandled;
 	private Vector3 defaultScale;
+	private Vector3 originalScale;
+	private float maxSize;
 	private System.Random rand;
 
 	private bool fade;
@@ -21,6 +23,7 @@ public class ButtonController : MonoBehaviour
 	void Start ()
 	{
 		defaultScale = this.transform.localScale;
+		originalScale = defaultScale;
 		rand = new System.Random ();
 	}
 
@@ -28,11 +31,18 @@ public class ButtonController : MonoBehaviour
 	{
 
 		this.transform.position = Camera.main.ViewportToWorldPoint (new Vector3 (x, y, 8.9F));
+		defaultScale = originalScale;
+		maxSize = 0.70F;
 		textMesh.text = contents;
 		enabled = true;
 		fade = true;
 	}
-	
+
+	public void SetScale (float scale)
+	{
+		defaultScale = new Vector3 (scale, scale, 0);
+		maxSize = 0.70F * (defaultScale.x / originalScale.x);
+	}
 	// Update is called once per frame
 	void Update ()
 	{
@@ -56,10 +66,10 @@ public class ButtonController : MonoBehaviour
 			else
 				this.transform.localScale = defaultScale;
 		} else if (selected) {
-			if (this.transform.localScale.x < 0.70F)
+			if (this.transform.localScale.x < maxSize)
 				this.transform.localScale += new Vector3 (Time.deltaTime * 2, Time.deltaTime * 2, 0);
 			else
-				this.transform.localScale = new Vector3 (0.70F, 0.70F, 0);
+				this.transform.localScale = new Vector3 (maxSize, maxSize, 0);
 		}
 		textMesh.color = tempColour;
 	}
