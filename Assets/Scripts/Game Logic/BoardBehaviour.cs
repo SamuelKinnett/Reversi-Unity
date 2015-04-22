@@ -397,10 +397,8 @@ public class BoardBehaviour : MonoBehaviour
 	}
 
 	//Simulates a turn without actually modifying the map. Returns the board.
-	public int[,] SetTileState (int x, int y, int owner, int[,] aiMap, bool log = true)
+	public int[,] SetTileState (int x, int y, int owner, int[,] aiMap)
 	{
-		if (log)
-			filemanager.AddTurnToLog (x, y, owner);
 		int enemy;
 
 		int[,] testMap = new int[8, 8];

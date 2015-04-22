@@ -47,7 +47,7 @@ public class MonteCarlo : ScriptableObject, AI
 	{
 		node[] branches;
 		int currentPlayer;
-		int numberOfBranches;
+		int numberOfBranches = 0;
 
 		//Prevents the simulation from running too deep.
 		if (depth > 2)
@@ -91,5 +91,7 @@ public class MonteCarlo : ScriptableObject, AI
 		int[,] testMap = new int[8, 8];
 
 		Array.Copy (root.board, testMap, root.board.Length);
+
+		testMap = boardBehaviour.SetTileState (x, y, player, testMap, false);
 	}
 }
