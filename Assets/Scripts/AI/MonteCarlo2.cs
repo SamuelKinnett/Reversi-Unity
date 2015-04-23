@@ -1,4 +1,4 @@
-﻿//A very basic Monte-Carlo style AI with a search depth of three.
+﻿//A very basic Monte-Carlo style AI with a search depth of four.
 using UnityEngine;
 using System.Collections;
 using System;

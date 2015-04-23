@@ -1134,14 +1134,19 @@ public class BoardBehaviour : MonoBehaviour
 
 	public void TurnComplete ()
 	{
-		if (currentPlayer == 1)
-			nextPlayer = 2;
-		else
-			nextPlayer = 1;
-				
+		if (currentPlayer == 1) {
+			if (MovePossible (2))
+				nextPlayer = 2;
+			else
+				nextPlayer = 1;
+		} else {
+			if (MovePossible (1))
+				nextPlayer = 1;
+			else
+				nextPlayer = 2;
+		}
 		currentPlayer = 3;
 		switching = true;
-		//movePossible = MovePossible (nextPlayer);
 		time = 0;
 	}
 
