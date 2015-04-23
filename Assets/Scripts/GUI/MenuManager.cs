@@ -237,27 +237,27 @@ public class MenuManager : MonoBehaviour
 					if (names [0].gameType > -1) {
 						output = ReturnGameInfo (names [0]);
 						button1.CreateButton (0.5F, 0.65F, output);
-						button1.SetScale (0.35F);
+						button1.SetScale (0.3F);
 					}
 					if (names [1].gameType > -1) {
 						output = ReturnGameInfo (names [1]);
 						button2.CreateButton (0.5F, 0.55F, output);
-						button2.SetScale (0.35F);
+						button2.SetScale (0.3F);
 					}
 					if (names [2].gameType > -1) {
 						output = ReturnGameInfo (names [2]);
 						button3.CreateButton (0.5F, 0.45F, output);
-						button3.SetScale (0.35F);
+						button3.SetScale (0.3F);
 					}
 					if (names [3].gameType > -1) {
 						output = ReturnGameInfo (names [3]);
 						button4.CreateButton (0.5F, 0.35F, output);
-						button4.SetScale (0.35F);
+						button4.SetScale (0.3F);
 					}
 					if (names [4].gameType > -1) {
 						output = ReturnGameInfo (names [4]);
 						button5.CreateButton (0.5F, 0.25F, output);
-						button5.SetScale (0.35F);
+						button5.SetScale (0.3F);
 					}
 
 					menuOptions3 = MenuOptions3.load1;

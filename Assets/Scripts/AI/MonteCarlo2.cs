@@ -10,12 +10,6 @@ public class MonteCarlo2 : ScriptableObject, AI
 	int playerNumber;				//Is the AI player 1 or player 2?
 	int enemyNumber;				//What is the number of the other player?
 
-	//The gamestate structure is used to store the game board for use in calculations
-	struct GameState
-	{
-		public int[,] board;
-	}
-
 	//The placement structure is used to define a possible move that can be taken and the board that would result.
 	struct Placement
 	{
@@ -40,7 +34,6 @@ public class MonteCarlo2 : ScriptableObject, AI
 	// Method to place a tile on the board.
 	public void UpdateAI ()
 	{
-		GameState gameState = new GameState ();
 		int bestX = 0;		//The x co-ordinate of the best tile
 		int bestY = 0;		//The y co-ordinate of the best tile
 		
@@ -58,7 +51,6 @@ public class MonteCarlo2 : ScriptableObject, AI
 				for (int i = 0; i < firstTurnPlacements.Length; i++) {
 					firstTurnPlacements [i] = FindHighestScoringMove (firstTurnPlacements [i].board, enemyNumber, firstTurnPlacements [i].x, firstTurnPlacements [i].y);
 				}
-
 				//We now have an array containing the state of the gameboard corresponding to the possible move after 1 turn.
 				//Next, we will simulate all possible moves stemming from each of these first moves. 
 
@@ -68,49 +60,60 @@ public class MonteCarlo2 : ScriptableObject, AI
 				//Get all possible placements for each first turn placement
 				for (int i = 0; i < firstTurnPlacements.Length; i++) {
 					secondTurnPlacements [i] = GetPossiblePlacements (firstTurnPlacements [i].board, playerNumber);
-					//Next, for each second turn placement, assume the enemy picks the best scoring tile and calculate the result accordingly
-					for (int c = 0; c < secondTurnPlacements[i].Length; c++) {
-						secondTurnPlacements [i] [c] = FindHighestScoringMove (secondTurnPlacements [i] [c].board, enemyNumber, secondTurnPlacements [i] [c].x, secondTurnPlacements [i] [c].y);
+					if (secondTurnPlacements [i] != null) {
+						//Next, for each second turn placement, assume the enemy picks the best scoring tile and calculate the result accordingly
+						for (int c = 0; c < secondTurnPlacements[i].Length; c++) {
+							secondTurnPlacements [i] [c] = FindHighestScoringMove (secondTurnPlacements [i] [c].board, enemyNumber, secondTurnPlacements [i] [c].x, secondTurnPlacements [i] [c].y);
+						}
 					}
 				}
 
-				//We now have a tree of sorts that contains all possible states of the game after two moves have been made, assuming the enemy player picks the highest scoring tile.
-				//Next, we will look at the percentage difference in score that each of the first choices could potentially lead to.
-				//We do this by going through every second turn scenario, finding the average score (positive or negative) and then comparing this to the current score.
+				//Check to see if the first element of secondTurnPlacements is null. If this is the case, it means that the next move is the last that can be played.
+				//We will therefore then just play the first move in the firstTurnPlacements.
 
-				float[] potentialScores = new float[firstTurnPlacements.Length];
+				if (secondTurnPlacements [0] == null) {
+					boardBehaviour.SetTileState (firstTurnPlacements [0].x, firstTurnPlacements [0].y, playerNumber);
+					boardBehaviour.TurnComplete ();
+				} else {
+			
 
-				for (int i = 0; i < firstTurnPlacements.Length; i++) {
+					//We now have a tree of sorts that contains all possible states of the game after two moves have been made, assuming the enemy player picks the highest scoring tile.
+					//Next, we will look at the percentage difference in score that each of the first choices could potentially lead to.
+					//We do this by going through every second turn scenario, finding the average score (positive or negative) and then comparing this to the current score.
 
-					float scoreTotal = 0;
+					float[] potentialScores = new float[firstTurnPlacements.Length];
 
-					for (int c = 0; c < secondTurnPlacements[i].Length; c++) {
-						scoreTotal += GetScore (secondTurnPlacements [i] [c].board, playerNumber) - GetScore (secondTurnPlacements [i] [c].board, enemyNumber);
+					for (int i = 0; i < firstTurnPlacements.Length; i++) {
+
+						float scoreTotal = 0;
+
+						for (int c = 0; c < secondTurnPlacements[i].Length; c++) {
+							scoreTotal += GetScore (secondTurnPlacements [i] [c].board, playerNumber) - GetScore (secondTurnPlacements [i] [c].board, enemyNumber);
+						}
+
+						//Get the average score.
+						potentialScores [i] = scoreTotal / secondTurnPlacements [i].Length;
 					}
 
-					//Get the average score.
-					potentialScores [i] = scoreTotal / secondTurnPlacements [i].Length;
-				}
+					Debug.Log ("Scores: " + potentialScores);
 
-				Debug.Log ("Scores: " + potentialScores);
+					//Now that we know all of the average scores that will result from each possible move, we can pick the move that will give us the best average score.
 
-				//Now that we know all of the average scores that will result from each possible move, we can pick the move that will give us the best average score.
+					float tempBestScore = potentialScores [0];
+					int currentTurnChoice = 0;
 
-				float tempBestScore = potentialScores [0];
-				int currentTurnChoice = 0;
-
-				for (int i = 0; i < potentialScores.Length; i++) {
-					if (potentialScores [i] > tempBestScore) {
-						currentTurnChoice = i;
-						tempBestScore = potentialScores [i];
+					for (int i = 0; i < potentialScores.Length; i++) {
+						if (potentialScores [i] > tempBestScore) {
+							currentTurnChoice = i;
+							tempBestScore = potentialScores [i];
+						}
 					}
+
+					//Now, let's extract the information required to take the turn
+
+					boardBehaviour.SetTileState (firstTurnPlacements [currentTurnChoice].x, firstTurnPlacements [currentTurnChoice].y, playerNumber);
+					boardBehaviour.TurnComplete ();
 				}
-
-				//Now, let's extract the information required to take the turn
-
-				boardBehaviour.SetTileState (firstTurnPlacements [currentTurnChoice].x, firstTurnPlacements [currentTurnChoice].y, playerNumber);
-				boardBehaviour.TurnComplete ();
-
 				/*
 			for (int y = 0; y < 8; y ++) {
 				for (int x = 0; x < 8; x++) {
