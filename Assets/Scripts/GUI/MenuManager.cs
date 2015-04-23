@@ -103,7 +103,8 @@ public class MenuManager : MonoBehaviour
 		menuOptions1 = MenuOptions1.start;
 		menuOptions2 = MenuOptions2.pvp;
 		menuOptions3 = MenuOptions3.load1;
-		aiChoice = AiChoiceOptions.GreedyAI;
+		aiChoice1 = AiChoiceOptions.GreedyAI;
+		aiChoice2 = AiChoiceOptions.GreedyAI;
 
 		updateNeeded = true;
 
@@ -131,6 +132,26 @@ public class MenuManager : MonoBehaviour
 	{
 		if (inMenu && Input.GetKeyDown (KeyCode.Escape) && (menuState == MenuState.selectGameType || menuState == MenuState.loadGame)) {
 			menuState = MenuState.main;
+			updateNeeded = true;
+			
+			button1.selected = true;
+			button2.selected = false;
+			button3.selected = false;
+			button4.selected = false;
+			button5.selected = false;
+			
+		} else if (inMenu && Input.GetKeyDown (KeyCode.Escape) && (menuState == MenuState.selectPVA || menuState == MenuState.selectAVA1)) {
+			menuState = MenuState.selectGameType;
+			updateNeeded = true;
+
+			button1.selected = true;
+			button2.selected = false;
+			button3.selected = false;
+			button4.selected = false;
+			button5.selected = false;
+
+		} else if (inMenu && Input.GetKeyDown (KeyCode.Escape) && (menuState == MenuState.selectAVA2)) {
+			menuState = MenuState.selectAVA1;
 			updateNeeded = true;
 			
 			button1.selected = true;
@@ -481,13 +502,53 @@ public class MenuManager : MonoBehaviour
 				switch (aiChoice1) {
 
 				case AiChoiceOptions.GreedyAI:
+					aiChoice1 = AiChoiceOptions.MonteCarloAI;
+					button1.selected = false;
+					button2.selected = false;
+					button3.selected = true;
+					button4.selected = false;
+					button5.selected = false;
 
 					break;
 
-				case AiChoiceOptions.MonteCarloAI:
-
-					break;
 				}
+
+				break;
+
+			case MenuState.selectAVA1:
+
+				switch (aiChoice1) {
+					
+				case AiChoiceOptions.GreedyAI:
+					aiChoice1 = AiChoiceOptions.MonteCarloAI;
+					button1.selected = false;
+					button2.selected = false;
+					button3.selected = true;
+					button4.selected = false;
+					button5.selected = false;
+					
+					break;
+					
+				}
+
+				break;
+
+			case MenuState.selectAVA2:
+
+				switch (aiChoice2) {
+					
+				case AiChoiceOptions.GreedyAI:
+					aiChoice2 = AiChoiceOptions.MonteCarloAI;
+					button1.selected = false;
+					button2.selected = false;
+					button3.selected = true;
+					button4.selected = false;
+					button5.selected = false;
+					
+					break;
+					
+				}
+
 				break;
 
 			}
@@ -615,6 +676,59 @@ public class MenuManager : MonoBehaviour
 				
 				break;
 
+			case MenuState.selectPVA:
+				
+				switch (aiChoice1) {
+					
+				case AiChoiceOptions.MonteCarloAI:
+					aiChoice1 = AiChoiceOptions.GreedyAI;
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
+					
+					break;
+					
+				}
+				
+				break;
+				
+			case MenuState.selectAVA1:
+				
+				switch (aiChoice1) {
+					
+				case AiChoiceOptions.MonteCarloAI:
+					aiChoice1 = AiChoiceOptions.GreedyAI;
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
+					
+					break;
+					
+				}
+				
+				break;
+				
+			case MenuState.selectAVA2:
+				
+				switch (aiChoice2) {
+					
+				case AiChoiceOptions.MonteCarloAI:
+					aiChoice2 = AiChoiceOptions.GreedyAI;
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
+					
+					break;
+					
+				}
+				
+				break;
 				
 			}
 		}
@@ -695,6 +809,19 @@ public class MenuManager : MonoBehaviour
 					break;
 
 				}
+				break;
+
+			case MenuState.selectPVA:
+				StartGame (1, (int)aiChoice1 + 1);
+				break;
+
+			case MenuState.selectAVA1:
+				menuState = MenuState.selectAVA2;
+				updateNeeded = true;
+				break;
+
+			case MenuState.selectAVA2:
+				StartGame (2, (int)aiChoice1 + 1, (int)aiChoice2 + 1);
 				break;
 
 			}
@@ -783,7 +910,7 @@ public class MenuManager : MonoBehaviour
 		button5.selected = false;
 	}
 
-	public void StartGame (int gameType)
+	public void StartGame (int gameType, int AI1 = 0, int AI2 = 0)
 	{
 		boardBehaviour.filemanager = fileManager;
 		if (gameType != 3)
@@ -792,6 +919,6 @@ public class MenuManager : MonoBehaviour
 		inMenu = false;
 		camera.transform.position = new Vector3 (-0.64F, -0.64F, -10);
 		cameraController.rotationMultiplier = 2.5F;
-		gameManager.StartGame (gameType);
+		gameManager.StartGame (gameType, AI1, AI2);
 	}
 }

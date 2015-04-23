@@ -38,7 +38,7 @@ public class BoardBehaviour : MonoBehaviour
 		bool boardFull = true;
 		time += Time.deltaTime;
 
-		movePossible = MovePossible (1) && MovePossible (2);
+		movePossible = MovePossible (1) || MovePossible (2);
 		
 		if (switching) {
 			if (time >= 1) {

@@ -42,10 +42,9 @@ public class GreedyAI : ScriptableObject, AI
 				}
 			}
 
-			if (highestX != -1 && highestY != -1) {
+			if (highestX != -1 && highestY != -1)
 				boardBehaviour.SetTileState (highestX, highestY, playerNumber);
-				boardBehaviour.TurnComplete ();
-			}
+			boardBehaviour.TurnComplete ();
 		}
 	}
 }

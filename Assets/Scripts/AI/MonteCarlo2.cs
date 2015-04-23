@@ -162,6 +162,8 @@ public class MonteCarlo2 : ScriptableObject, AI
 			*/
 				//boardBehaviour.SetTileState (bestX, bestY, playerNumber);
 				//boardBehaviour.TurnComplete ();
+			} else {
+				boardBehaviour.TurnComplete ();
 			}
 		}
 	}
