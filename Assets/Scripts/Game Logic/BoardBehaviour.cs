@@ -37,6 +37,8 @@ public class BoardBehaviour : MonoBehaviour
 	{
 		bool boardFull = true;
 		time += Time.deltaTime;
+
+		movePossible = MovePossible (1) && MovePossible (2);
 		
 		if (switching) {
 			if (time >= 1) {
@@ -93,7 +95,7 @@ public class BoardBehaviour : MonoBehaviour
 
 		for (int x = 0; x < 8; x++) {
 			for (int y = 0; y < 8; y++) {
-				if (GetTileScore (x, y, currentPlayer) > 0)
+				if (CanPlaceTile (x, y, currentPlayer) && GetTileScore (x, y, currentPlayer) > 0)
 					canMove = true;
 			}
 		}
@@ -112,7 +114,7 @@ public class BoardBehaviour : MonoBehaviour
 	//Checks if a tile can be placed on the map
 	public bool CanPlaceTile (int x, int y, int owner)
 	{
-		if (GetTileScore (x, y, owner) > 0)
+		if (GetTileScore (x, y, owner) > 0 && GetTileState (x, y) == 0)
 			return true;
 		else
 			return false;
@@ -121,7 +123,7 @@ public class BoardBehaviour : MonoBehaviour
 	//Checks if a tile can be placed on a theoretical map
 	public bool CanPlaceTile (int x, int y, int owner, int[,] aiMap)
 	{
-		if (GetTileScore (x, y, owner, aiMap) > 0)
+		if (GetTileScore (x, y, owner, aiMap) > 0 && GetTileState (x, y) == 0)
 			return true;
 		else
 			return false;
@@ -1139,7 +1141,7 @@ public class BoardBehaviour : MonoBehaviour
 				
 		currentPlayer = 3;
 		switching = true;
-		movePossible = MovePossible (nextPlayer);
+		//movePossible = MovePossible (nextPlayer);
 		time = 0;
 	}
 

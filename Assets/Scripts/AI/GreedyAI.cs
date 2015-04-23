@@ -21,8 +21,8 @@ public class GreedyAI : ScriptableObject, AI
 	// Method to place a tile on the board.
 	public void UpdateAI ()
 	{
-		int highestX = 0;		//The x co-ordinate of the current highest scoring tile
-		int highestY = 0;		//The y co-ordinate of the current highest scoring tile
+		int highestX = -1;		//The x co-ordinate of the current highest scoring tile
+		int highestY = -1;		//The y co-ordinate of the current highest scoring tile
 
 		int highestScore = 0;	//The highest score found so far
 		int currentScore;		//The score of the current tile being compared
@@ -42,8 +42,10 @@ public class GreedyAI : ScriptableObject, AI
 				}
 			}
 
-			boardBehaviour.SetTileState (highestX, highestY, playerNumber);
-			boardBehaviour.TurnComplete ();
+			if (highestX != -1 && highestY != -1) {
+				boardBehaviour.SetTileState (highestX, highestY, playerNumber);
+				boardBehaviour.TurnComplete ();
+			}
 		}
 	}
 }

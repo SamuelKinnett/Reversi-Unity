@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
 			return player2;
 	}
 
-	public void StartGame (int gameType)
+	public void StartGame (int gameType, int aiChoice1 = 0, int aiChoice2 = 0)
 	{
 
 		this.gameType = gameType;
@@ -61,13 +61,13 @@ public class GameManager : MonoBehaviour
 		case 1:
 			//TODO: Allow player to choose AI to face
 			player1.Initialise (1);
-			bot1.Initialise (2, 2);	//Initalise 1 Monte-Carlo AI as player 2
+			bot1.Initialise (aiChoice1, 2);	//Initalise 1 Monte-Carlo AI as player 2
 			break;
 			
 		case 2:
 			//TODO: Allow player to choose 2 AI to face off
-			bot1.Initialise (1, 1); //Initialise 1 Greedy AI as player 1
-			bot2.Initialise (2, 2); //Initilaise 1 Monte-Carlo AI as player 2
+			bot1.Initialise (aiChoice1, 1); //Initialise 1 Greedy AI as player 1
+			bot2.Initialise (aiChoice2, 2); //Initilaise 1 Monte-Carlo AI as player 2
 			break;
 
 		case 3:	//Watching a loaded game

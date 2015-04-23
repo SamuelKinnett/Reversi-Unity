@@ -5,7 +5,10 @@ enum MenuState
 {
 	main,
 	selectGameType,
-	loadGame
+	loadGame,
+	selectPVA,
+	selectAVA1,
+	selectAVA2
 }
 
 enum MenuOptions1
@@ -29,6 +32,12 @@ enum MenuOptions3
 	load3,
 	load4,
 	load5
+}
+
+enum AiChoiceOptions
+{
+	GreedyAI,
+	MonteCarloAI
 }
 
 public class MenuManager : MonoBehaviour
@@ -72,6 +81,8 @@ public class MenuManager : MonoBehaviour
 	private MenuOptions1 menuOptions1;
 	private MenuOptions2 menuOptions2;
 	private MenuOptions3 menuOptions3;
+	private AiChoiceOptions aiChoice1;
+	private AiChoiceOptions aiChoice2;
 	private bool updateNeeded;
 
 	private TitleManager titleManager;
@@ -92,6 +103,7 @@ public class MenuManager : MonoBehaviour
 		menuOptions1 = MenuOptions1.start;
 		menuOptions2 = MenuOptions2.pvp;
 		menuOptions3 = MenuOptions3.load1;
+		aiChoice = AiChoiceOptions.GreedyAI;
 
 		updateNeeded = true;
 
@@ -242,6 +254,82 @@ public class MenuManager : MonoBehaviour
 					updateNeeded = false;
 				}
 				break;
+
+			case MenuState.selectPVA:
+
+				if (updateNeeded) {
+
+					titleManager.enabled = false;
+					version.enabled = false;
+
+					button1.CreateButton (0.5F, 0.8F, "Select Opponent");
+					button2.CreateButton (0.5F, 0.6F, "Greedy AI");
+					button3.CreateButton (0.5F, 0.5F, "Monte-Carlo AI");
+					button4.enabled = false;
+					button5.enabled = false;
+					
+					aiChoice1 = AiChoiceOptions.GreedyAI;
+					
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
+					
+					updateNeeded = false;
+				}
+				break;
+
+			case MenuState.selectAVA1:
+				
+				if (updateNeeded) {
+					
+					titleManager.enabled = false;
+					version.enabled = false;
+					
+					button1.CreateButton (0.5F, 0.8F, "Select First AI");
+					button2.CreateButton (0.5F, 0.6F, "Greedy AI");
+					button3.CreateButton (0.5F, 0.5F, "Monte-Carlo AI");
+					button4.enabled = false;
+					button5.enabled = false;
+					
+					aiChoice1 = AiChoiceOptions.GreedyAI;
+					
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
+					
+					updateNeeded = false;
+				}
+				break;
+
+			case MenuState.selectAVA2:
+				
+				if (updateNeeded) {
+					
+					titleManager.enabled = false;
+					version.enabled = false;
+					
+					button1.CreateButton (0.5F, 0.8F, "Select Second AI");
+					button2.CreateButton (0.5F, 0.6F, "Greedy AI");
+					button3.CreateButton (0.5F, 0.5F, "Monte-Carlo AI");
+					button4.enabled = false;
+					button5.enabled = false;
+					
+					aiChoice2 = AiChoiceOptions.GreedyAI;
+					
+					button1.selected = false;
+					button2.selected = true;
+					button3.selected = false;
+					button4.selected = false;
+					button5.selected = false;
+					
+					updateNeeded = false;
+				}
+				break;
+
 			}
 		} else {
 			if (Input.GetKeyDown (KeyCode.Escape) && boardBehaviour.winner != 0) {
@@ -386,6 +474,20 @@ public class MenuManager : MonoBehaviour
 
 				}
 
+				break;
+
+			case MenuState.selectPVA:
+
+				switch (aiChoice1) {
+
+				case AiChoiceOptions.GreedyAI:
+
+					break;
+
+				case AiChoiceOptions.MonteCarloAI:
+
+					break;
+				}
 				break;
 
 			}
@@ -550,12 +652,15 @@ public class MenuManager : MonoBehaviour
 					break;
 
 				case MenuOptions2.pva:
-					StartGame (1);
+					menuState = MenuState.selectPVA;
+					updateNeeded = true;
+					//StartGame (1);
 					break;
 
 				case MenuOptions2.ava:
-					//TODO: Make a call to some kind of AI selection menu.
-					StartGame (2);
+					menuState = MenuState.selectAVA1;
+					updateNeeded = true;
+					//StartGame (2);
 					break;
 				}
 				break;
