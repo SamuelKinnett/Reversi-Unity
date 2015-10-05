@@ -8,6 +8,7 @@ public class ShadowControl : MonoBehaviour
 	private ShadowManager shadowManager;
 
 	float sinValue;
+	float rotationSpeed = 30;
 	float x;			//Anchor point X
 	float y;			//Anchor point Y
 
@@ -28,10 +29,10 @@ public class ShadowControl : MonoBehaviour
 	{
 		spriteRenderer.material.color = Color.Lerp (shadowManager.colour1, shadowManager.colour2, shadowManager.lerpValue);
 		if (shadowManager.rotating) {
-			if (sinValue == 360)
-				sinValue = 1;
+			if (sinValue >= 360)
+				sinValue = rotationSpeed * Time.deltaTime;
 			else
-				sinValue++;
+				sinValue += rotationSpeed * Time.deltaTime;
 
 			Vector3 newPosition = new Vector3 (x + (Mathf.Sin (Mathf.Deg2Rad * sinValue) * shadowManager.rotationAmmount), y + (Mathf.Cos (Mathf.Deg2Rad * sinValue) * shadowManager.rotationAmmount), shadowManager.zLayer);
 
